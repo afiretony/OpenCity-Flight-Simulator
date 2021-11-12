@@ -2,8 +2,23 @@
 Carnegie Mellon University - 24780B Engineering Computation - 21fall
 
 ## Summary
-This repository is the final project of team Engineers Republic.
+This repository is the final project of team Engineers Republic. Flight simulator is a trending topic in both the entertainment and professional area. In this
+project, the group is planning to develop a software product based on the C++ and OpenGL to realize a customizable and lightweight flight simulator.
 
+## Basic Function
+### Entertainment
+* Users can explore and enjoy a city landscape in the FPV / TPV view display.
+* Users can experience controlling multiple kinds of aircrafts easily using a keyboard or joystick. 
+* Ariel random obstructions avoidance.
+  
+### Professional
+* Related developers can use this product as a virtual testing tool by importing the building models of a real region or aircraft parameters.
+* AI engineers can adopt this product as their simulation or testing tool (i.e. path planning algorithm implementation).
+* This product can even service some mapping or navigation projects. 
+
+## Special Features
+The aircraft has the function of automatic obstacle avoidance, and the city looks realistic with reasonable dimensions (or can be dimensions of real city buildings). Users can switch between different aircraft including UAVs and different helicopters. Users can switch between first-person and third-person point of views.
+    
 ## Getting Started
 In case you haven't installed cmake on windows, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
 ) to download and install cmake, make sure you selected "add to system PATH".
