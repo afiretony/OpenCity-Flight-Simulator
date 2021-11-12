@@ -50,7 +50,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include "flightcontrol.h"
 //#include <glm/glm.hpp>
 //#include <glm/gtc/matrix_transform.hpp>
 //#include <glm/gtc/type_ptr.hpp>
@@ -103,6 +103,15 @@ int main()
 
     // glfw: initialize and configure
     // ------------------------------
+    // load user interface
+    
+    // load city and uav model
+    
+    // load flight control and dynamics model
+    uav uav_fc;
+    
+    // load sound
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
