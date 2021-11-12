@@ -1,6 +1,8 @@
-# 24780-Engineers-Republic
+# OpenCity Flight Simulator
+Carnegie Mellon University - 24780B Engineering Computation - 21fall
 
 ## Summary
+This repository is the final project of team Engineers Republic.
 
 ## Getting Started
 In case you haven't installed cmake on windows, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
@@ -26,7 +28,9 @@ cmake -G "Visual Studio 16 2019" ..
 After build, sln file is generated at `/24780-Engineers-Republic/Glitter/Build/Glitter.sln`, you can open the solution and start the project.
 
 ### First run
+Main file is located at `24780-Engineers-Republic\Glitter\Glitter\Sources\main.cpp`, at first run you need to build all solutions(by default solution configuration), Visual Studio may pop-up permission error after build. Then you should change Solution Glitter properties from `All_BUILD` to `Glitter`.
 
+![Screenshot](/figures/vs_setup.png)
 
 ## Documentation
 Many people overlook how frustrating it is to install dependencies, especially in environments lacking package managers or administrative privileges. For beginners, just getting set up properly set up can be a huge challenge. Glitter is meant to help you overcome that roadblock.
