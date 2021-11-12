@@ -21,9 +21,7 @@ The aircraft has the function of automatic obstacle avoidance, and the city look
     
 ## Getting Started
 In case you haven't installed cmake on windows, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
-) to download and install cmake, make sure you selected "add to system PATH".
-
-![Screenshot](/figures/cmake.png)
+) to download and install cmake, make sure that you added cmake to system PATH.
 
 To clone this repo:
 ```bash
@@ -42,7 +40,7 @@ cmake -G "Visual Studio 16 2019" ..
 
 After build, sln file is generated at `/24780-Engineers-Republic/Glitter/Build/Glitter.sln`, you can open the solution and start the project.
 
-### First run
+### [Special notice] First run
 Main file is located at `24780-Engineers-Republic\Glitter\Glitter\Sources\main.cpp`, at first run you need to build all solutions(by default solution configuration), Visual Studio may pop-up permission error after build. Then you should change Solution Glitter properties from `All_BUILD` to `Glitter`.
 
 ![Screenshot](/figures/vs_setup.png)
