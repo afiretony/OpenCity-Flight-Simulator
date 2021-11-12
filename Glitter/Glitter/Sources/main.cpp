@@ -58,6 +58,11 @@
 //#include <shader_m.h>
 //#include <camera.h>
 //#include <model.h>
+#include "ysglfontdata.h"
+#include "StringPlus.h"
+#include "fssimplewindow.h"
+#include "yssimplesound.h"
+#include "yspng.h"
 
 #include <iostream>
 //#include "yssimplesound.h"
