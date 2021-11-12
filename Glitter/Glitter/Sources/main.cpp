@@ -161,15 +161,16 @@ int main()
     // store the filename of music
     string fileNames[] = { "UAV1.wav", "UAV2.wav" };
 
-    // load user choice, note use of .c_str()
-    if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
-        player1.Start();
-        player1.PlayBackground(myWav1);
-    }
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+
+        // load user choice, note use of .c_str()
+        if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
+            player1.Start();
+            player1.PlayBackground(myWav1);
+        }
         // per-frame time logic
         // --------------------
         float currentFrame = glfwGetTime();
