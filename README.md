@@ -14,19 +14,17 @@ mkdir Build
 cd Build
 ```
 
-Now generate a project file or makefile for your platform. If you want to use a particular IDE, make sure it is installed; don't forget to set the Start-Up Project in Visual Studio or the Target in Xcode.
+Now generate a project file or makefile for your Windows Visual Studio 2019.
 
 ```bash
-# UNIX Makefile
-cmake ..
-
-# Mac OSX
-cmake -G "Xcode" ..
-
 # Microsoft Windows
 cmake -G "Visual Studio 16 2019" ..
-...
 ```
+
+After build, sln file is generated at `/24780-Engineers-Republic/Glitter/Build/Glitter.sln`, you can open the solution and start the project.
+
+### First run
+
 
 ## Documentation
 Many people overlook how frustrating it is to install dependencies, especially in environments lacking package managers or administrative privileges. For beginners, just getting set up properly set up can be a huge challenge. Glitter is meant to help you overcome that roadblock.
