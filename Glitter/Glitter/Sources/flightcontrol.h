@@ -33,6 +33,12 @@ struct generalforce {
 	float fz;
 };
 
+struct cameraPosition {
+	float Px;
+	float Py;
+	float Pz;
+};
+
 class uav {
 private:
 	// define basic state of the uav
@@ -42,6 +48,7 @@ private:
 
 	// system parameters
 	float mass = 3.0; // mass, kg
+	float dt = 1.0;
 
 	// internal and external forces
 	generalforce F_motor = { 0.0, 0.0, 0.0 };	// force provided by motors
@@ -62,4 +69,5 @@ public:
 
 	// calculate drone's current join force and accerelation
 	void dynamics();
+	void switchPOV();
 };

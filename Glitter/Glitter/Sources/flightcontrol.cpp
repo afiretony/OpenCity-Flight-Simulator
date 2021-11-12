@@ -58,3 +58,7 @@ void uav::dynamics()
 	pos.z += vel.vz * dt;
 
 }
+
+void uav::switchPOV()
+{
+}
