@@ -4,7 +4,7 @@
 
 ## Getting Started
 In case you haven't installed cmake on windows, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
-) to download and install cmake.
+) to download and install cmake, make sure you selected "add to system PATH".
 
 To clone this repo:
 ```bash
