@@ -2,6 +2,7 @@
 #include<math.h>
 #include<iostream>
 #include <vector>
+#include <glm/glm.hpp>
 
 #define PI 3.14159265
 using namespace std;
@@ -39,6 +40,9 @@ struct cameraPosition {
 	float Pz;
 };
 
+// comment added by shaobo: consider using glm::vec3 instead of 
+// self-defined structure for future vec calculations
+
 class uav {
 private:
 	// define basic state of the uav
@@ -69,5 +73,8 @@ public:
 
 	// calculate drone's current join force and accerelation
 	void dynamics();
+
+	// Added: get uav position
+	glm::vec3 getUavPos();
 	void switchPOV();
 };
