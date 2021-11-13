@@ -117,10 +117,10 @@ int main()
     }
     // build and compile shaders
     // -------------------------
-    Shader ourShader("C:/Users/wuwei/Desktop/24-780 Eng Comp/24780-Engineers-Republic/Glitter/Glitter/Sources/modelvs.vs", "C:/Users/wuwei/Desktop/24-780 Eng Comp/24780-Engineers-Republic/Glitter/Glitter/Sources/modelfs.fs");
+    Shader ourShader("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelvs.vs", "C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelfs.fs");
 
     // Declear UAV Model
-    Model UAV("C:/Users/wuwei/Desktop/24-780 Eng Comp/24780-Engineers-Republic/Glitter/Glitter/Model/UAV/quadcop.obj");
+    Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
     //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
 
     // render loop
