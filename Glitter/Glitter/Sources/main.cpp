@@ -110,61 +110,66 @@ int main()
     // store the filename of music
     string fileNames[] = { "UAV1.wav", "UAV2.wav" };
     // load user choice, note use of .c_str()
-    if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
+    if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
 
         player1.Start();
         player1.PlayBackground(myWav1);
-    }
-    // build and compile shaders
+        // build and compile shaders
     // -------------------------
-    Shader ourShader("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelvs.vs", "C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelfs.fs");
+        Shader ourShader("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelvs.vs", "C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelfs.fs");
 
-    // Declear UAV Model
-    Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
-    //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
+        // Declear UAV Model
+        Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
+        //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
 
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
-    {
+        // render loop
+        // -----------
+        while (!glfwWindowShouldClose(window))
+        {
 
 
-        // per-frame time logic
-        // --------------------
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+            // per-frame time logic
+            // --------------------
+            float currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
 
-        // input
-        // -----
-        processInput(window);
+            // input
+            // -----
+            processInput(window);
 
-        // render
-        // ------
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // render
+            // ------
+            glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // enable shader before setting uniforms
-        ourShader.use();
+            // enable shader before setting uniforms
+            ourShader.use();
 
-        // camera/view transformation
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+            // camera/view transformation
+            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            glm::mat4 view = camera.GetViewMatrix();
 
-        // view/projection transformations
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
+            // view/projection transformations
+            ourShader.setMat4("projection", projection);
+            ourShader.setMat4("view", view);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(1., 0.0f, 0.));
-        model = glm::scale(model, glm::vec3(0.001, 0.001, 0.001));	// it's a bit too big for our scene, so scale it down
-        UAV.Draw(ourShader);
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(1., 0.0f, 0.));
+            model = glm::scale(model, glm::vec3(0.001, 0.001, 0.001));	// it's a bit too big for our scene, so scale it down
+            UAV.Draw(ourShader);
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
+    else {
+        cout << "Failed to read " << "UAV1.wav" << endl;
+    }
+    
+    
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
