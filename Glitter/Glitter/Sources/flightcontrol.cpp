@@ -59,6 +59,21 @@ void uav::dynamics()
 
 }
 
-void uav::switchPOV()
+glm::vec3 uav::getUavPos()
 {
+	return glm::vec3();
+}
+
+void uav::switchToFirstPOV()
+{
+	cam.Px = pos.x;
+	cam.Py = pos.y;
+	cam.Pz = pos.z;
+}
+
+void uav::switchToThirdPOV()
+{
+	cam.Px = pos.x + 10;
+	cam.Py = pos.y + 10;
+	cam.Pz = pos.z + 10;
 }

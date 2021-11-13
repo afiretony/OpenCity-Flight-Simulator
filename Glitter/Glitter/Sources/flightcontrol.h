@@ -49,6 +49,7 @@ private:
 	position pos = { 0.0, 0.0, 0.1 };
 	velocity vel = { 0.0, 0.0, 0.0 };
 	acceleration acc = { 0.0, 0.0, 0.0 };
+	cameraPosition cam = { pos.x, pos.y, pos.z };
 
 	// system parameters
 	float mass = 3.0; // mass, kg
@@ -76,5 +77,6 @@ public:
 
 	// Added: get uav position
 	glm::vec3 getUavPos();
-	void switchPOV();
+	void switchToFirstPOV();
+	void switchToThirdPOV();
 };
