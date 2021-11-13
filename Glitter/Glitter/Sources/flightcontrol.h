@@ -34,6 +34,12 @@ struct generalforce {
 	float fz;
 };
 
+struct cameraPosition {
+	float Px;
+	float Py;
+	float Pz;
+};
+
 // comment added by shaobo: consider using glm::vec3 instead of 
 // self-defined structure for future vec calculations
 
@@ -43,9 +49,11 @@ private:
 	position pos = { 0.0, 0.0, 0.1 };
 	velocity vel = { 0.0, 0.0, 0.0 };
 	acceleration acc = { 0.0, 0.0, 0.0 };
+	cameraPosition cam = { pos.x, pos.y, pos.z };
 
 	// system parameters
 	float mass = 3.0; // mass, kg
+	float dt = 1.0;
 
 	// internal and external forces
 	generalforce F_motor = { 0.0, 0.0, 0.0 };	// force provided by motors
@@ -69,4 +77,6 @@ public:
 
 	// Added: get uav position
 	glm::vec3 getUavPos();
+	void switchToFirstPOV();
+	void switchToThirdPOV();
 };
