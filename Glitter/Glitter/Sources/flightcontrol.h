@@ -45,6 +45,9 @@ struct cameraPosition {
 
 class uav {
 private:
+	// thrust force of the model
+	float thrust = 50.0;
+	float Drag_coeff = 5.0;
 	// define basic state of the uav
 	position pos = { 0.0, 0.0, 0.1 };
 	velocity vel = { 0.0, 0.0, 0.0 };

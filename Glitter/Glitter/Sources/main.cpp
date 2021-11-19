@@ -10,11 +10,12 @@
 #include <model.h>
 #include "ysglfontdata.h"
 #include "StringPlus.h"
-#include "fssimplewindow.h"
 #include "yssimplesound.h"
 #include "yspng.h"
-
+#include <string>
+#include <limits.h>
 #include <iostream>
+#include <filesystem>
 //#include "yssimplesound.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
@@ -39,7 +40,12 @@ float lastFrame = 0.0f;
 
 //// sound player
 //bool canPlaySound = false;
-
+string getCurrentDir() {
+    char buff[MAX_PATH];
+    GetModuleFileName(NULL, buff, MAX_PATH);
+    string::size_type position = string(buff).find_last_of("\\/");
+    return string(buff).substr(0, position);
+}
 int main()
 {
     //YsSoundPlayer player1;
@@ -60,8 +66,33 @@ int main()
     // ------------------------------
     // load user interface
     
-    // load city and uav model
+    string Path_to_Project = getCurrentDir();
+    cout << "Current working directory : " << Path_to_Project << endl;
+    // when compiling using visual studio, current directory is usually .../Glitter/Glitter/build/debug
+    // we can use modify on this to cd to shader files
+
+    std::string t = "Glitter";
+    std::string::size_type i = Path_to_Project.find(t);
+    // delete everything after(including) "Glitter"
+    if (i != std::string::npos)
+        Path_to_Project.erase(i, Path_to_Project.length()-i);
+    cout << "Path to Project is: " << Path_to_Project << endl;
+    std::replace(Path_to_Project.begin(), Path_to_Project.end(), '\\', '/');
+
+    string Path_to_Shader1 = Path_to_Project + "Glitter/Glitter/Shaders/modelvs.vs";
+    const char* path1 = Path_to_Shader1.c_str(); // convert string to char, because Shader class input has to be char
+    string Path_to_Shader2 = Path_to_Project + "Glitter/Glitter/Shaders/modelfs.fs";
+    const char* path2 = Path_to_Shader2.c_str();
+
     
+    // load city and uav model
+    // Declear UAV Model
+    string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
+
+    // Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
+    
+    //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
+
     // load flight control and dynamics model
     //uav uav_fc;
     
@@ -110,29 +141,30 @@ int main()
     // store the filename of music
     string fileNames[] = { "UAV1.wav", "UAV2.wav" };
     // load user choice, note use of .c_str()
-    if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+    // if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+    if (true) {
 
-        player1.Start();
-        player1.PlayBackground(myWav1);
+        //player1.Start();
+        //player1.PlayBackground(myWav1);
         // build and compile shaders
     // -------------------------
-        Shader ourShader("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelvs.vs", "C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/modelfs.fs");
-
-        // Declear UAV Model
-        Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
-        //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
+        // Shader ourShader("C:/Users/chenhao/Desktop/24780-Engineers-Republic/Glitter/Glitter/Shaders/modelvs.vs", "C:/Users/chenhao/Desktop/24780-Engineers-Republic/Glitter/Glitter/Shaders/modelfs.fs");
+        Shader ourShader(path1, path2);
+        cout << "shader loaded" << endl;
+        Model UAV(Path_to_Model);
 
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
 
-
             // per-frame time logic
             // --------------------
+            
             float currentFrame = glfwGetTime();
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
+            // cout << currentFrame << endl;
 
             // input
             // -----
@@ -140,24 +172,53 @@ int main()
 
             // render
             // ------
+     /*       glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+            glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonOffset(1, 1);*/
+            //-------------------------
+
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+            
             // enable shader before setting uniforms
             ourShader.use();
 
             // camera/view transformation
             glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
             glm::mat4 view = camera.GetViewMatrix();
-
+            
             // view/projection transformations
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(1., 0.0f, 0.));
-            model = glm::scale(model, glm::vec3(0.001, 0.001, 0.001));	// it's a bit too big for our scene, so scale it down
+            model = glm::scale(model, glm::vec3(0.01, 0.01, 0.01));	// it's a bit too big for our scene, so scale it down
             UAV.Draw(ourShader);
+
+            glColor3ub(0, 0, 255);
+            // draw axes (x is red, y is green, z is blue)
+            
+            glLineWidth(8);
+            glBegin(GL_LINES);
+
+            glColor3ub(255, 0, 0);
+            glVertex3i(-500, 0, 0);
+            glVertex3i(500, 0, 0);
+
+            glColor3ub(0, 255, 0);
+            glVertex3i(0, -500, 0);
+            glVertex3i(0, 500, 0);
+
+            glColor3ub(0, 0, 255);
+            glVertex3i(0, 0, -500);
+            glVertex3i(0, 0, 500);
+
+            glEnd();
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------

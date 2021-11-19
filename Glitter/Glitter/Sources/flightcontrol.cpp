@@ -2,11 +2,12 @@
 
 void uav::forward()
 {
-	pos.y += 1.;
+	F_motor.fx = thrust;
 }
 
 void uav::backward()
 {
+	F_motor.fx = -50.0;
 }
 
 void uav::left()
@@ -36,11 +37,16 @@ void uav::yawright()
 void uav::dynamics()
 {
 	// dynamics of uav 
-	// get called when location of uav updates
-	// calculate join force
+	// get called in main every loop
+	
+	// Air drag force calculation: 
+	F_drag.fx = -Drag_coeff * vel.vx * vel.vx;
+	F_drag.fy = -Drag_coeff * vel.vy * vel.vy;
+	F_drag.fz = -Drag_coeff * vel.vz * vel.vz;
+
 	F_join.fx = F_motor.fx + F_drag.fx + F_coulomb.fx;
 	F_join.fy = F_motor.fy + F_drag.fy + F_coulomb.fy;
-	F_join.fz = F_motor.fz + F_drag.fz + F_coulomb.fz;
+	F_join.fz = F_motor.fz + F_drag.fz + F_coulomb.fz; // the drone will hover, we are not introducing gravity force
 
 	// calculate acceleration
 	acc.ax = F_join.fx / mass;
