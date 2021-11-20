@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <shader_m.h>
 #include <camera.h>
 #include <model.h>
@@ -19,17 +18,20 @@
 //#include "yssimplesound.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
+using namespace std;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void drawGrid();
 
 // settings
 const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -89,10 +91,6 @@ int main()
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
 
-    // Model UAV("C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/UAVquadcop.obj");
-    
-    //Model UAV("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/resources/Solar/Sun/13913_Sun_v2_l3.obj");
-
     // load flight control and dynamics model
     //uav uav_fc;
     
@@ -105,7 +103,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Demo", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Engineering Republic", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -147,8 +145,8 @@ int main()
         //player1.Start();
         //player1.PlayBackground(myWav1);
         // build and compile shaders
-    // -------------------------
-        // Shader ourShader("C:/Users/chenhao/Desktop/24780-Engineers-Republic/Glitter/Glitter/Shaders/modelvs.vs", "C:/Users/chenhao/Desktop/24780-Engineers-Republic/Glitter/Glitter/Shaders/modelfs.fs");
+        // -------------------------
+        
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
@@ -172,17 +170,8 @@ int main()
 
             // render
             // ------
-     /*       glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-            glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_POLYGON_OFFSET_FILL);
-            glPolygonOffset(1, 1);*/
-            //-------------------------
-
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             // enable shader before setting uniforms
             ourShader.use();
@@ -196,29 +185,30 @@ int main()
             ourShader.setMat4("view", view);
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(1., 0.0f, 0.));
-            model = glm::scale(model, glm::vec3(0.01, 0.01, 0.01));	// it's a bit too big for our scene, so scale it down
+            model = glm::translate(model, glm::vec3(0., -0.2, 0.));
+            model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            ourShader.setMat4("model", model);
             UAV.Draw(ourShader);
 
-            glColor3ub(0, 0, 255);
-            // draw axes (x is red, y is green, z is blue)
-            
-            glLineWidth(8);
-            glBegin(GL_LINES);
+            //glColor3ub(0, 0, 255);
+            //// draw axes (x is red, y is green, z is blue)
+            //
+            //glLineWidth(8);
+            //glBegin(GL_LINES);
 
-            glColor3ub(255, 0, 0);
-            glVertex3i(-500, 0, 0);
-            glVertex3i(500, 0, 0);
+            //glColor3ub(255, 0, 0);
+            //glVertex3i(-500, 0, 0);
+            //glVertex3i(500, 0, 0);
 
-            glColor3ub(0, 255, 0);
-            glVertex3i(0, -500, 0);
-            glVertex3i(0, 500, 0);
+            //glColor3ub(0, 255, 0);
+            //glVertex3i(0, -500, 0);
+            //glVertex3i(0, 500, 0);
 
-            glColor3ub(0, 0, 255);
-            glVertex3i(0, 0, -500);
-            glVertex3i(0, 0, 500);
+            //glColor3ub(0, 0, 255);
+            //glVertex3i(0, 0, -500);
+            //glVertex3i(0, 0, 500);
 
-            glEnd();
+            //glEnd();
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -292,4 +282,22 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+void drawGrid() {
+    int i = 0;
+    for (int i = 0; i < 40; i++) {
+        glPushMatrix();
+        if (i < 20)
+            glTranslatef(0, 0, i);
+        else {
+            glTranslatef(i - 20, 0, 0);
+            glRotatef(-90, 0, 1, 0);
+        }
+
+        glBegin(GL_LINES);
+        glColor3f(1, 1, 1); glVertex3f(19, -0.1, 0);
+        glEnd();
+        glPopMatrix();
+    }
 }

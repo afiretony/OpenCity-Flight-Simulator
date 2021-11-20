@@ -94,6 +94,11 @@ public:
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+
+        /*for (Vertex point : vertices) {
+            cout << "Position(x, y, z): " << point.Position.x << point.Position.y << point.Position.z << endl;
+        }*/
+
     }
 
 private:
