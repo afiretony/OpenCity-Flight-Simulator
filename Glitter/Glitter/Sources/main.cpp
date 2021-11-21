@@ -170,6 +170,7 @@ int main()
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
+   
 
         // City model
         Model CITY1(Path_to_City1);
