@@ -12,5 +12,6 @@ protected:
 	glm::vec3  Pos, Vel;  
 	
 public:
-	SimObject();  // Model objectModel, glm::vec3  pos, glm::vec3 vel = glm::vec3(0.0f, 0.0f, 0.0f)
+	SimObject();  // Model objectModel, 
+	SimObject(glm::vec3  pos, glm::vec3 vel = glm::vec3(0.0f, 0.0f, 0.0f));
 };
