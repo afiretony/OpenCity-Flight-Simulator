@@ -244,17 +244,17 @@ int main()
             trans = glm::translate(trans, glm::vec3(0., 0., 3.));
             trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
             ourShader.setMat4("model", trans);
-            CITY1.Draw(ourShader);
+            CITY3.Draw(ourShader);
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(3., 0., 3.));
             trans = glm::scale(trans, glm::vec3(1.f, 5.f, 1.f));
             ourShader.setMat4("model", trans);
-            CITY2.Draw(ourShader);
+            CITY1.Draw(ourShader);
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(-3., 0., 3.));
             trans = glm::scale(trans, glm::vec3(1.f, 2.5f, 1.f));
             ourShader.setMat4("model", trans);
-            CITY3.Draw(ourShader);
+            CITY2.Draw(ourShader);
 
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(0., 0., 6.));
@@ -265,12 +265,30 @@ int main()
             trans = glm::translate(trans, glm::vec3(3., 0., 6.));
             trans = glm::scale(trans, glm::vec3(1.f, 2.f, 1.f));
             ourShader.setMat4("model", trans);
-            CITY2.Draw(ourShader);
+            CITY3.Draw(ourShader);
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(-3., 0., 6.));
             trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
             ourShader.setMat4("model", trans);
-            CITY3.Draw(ourShader);
+            CITY2.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 9.));
+            trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(1.5, 0., 9.));
+            trans = glm::scale(trans, glm::vec3(3.f, 2.f, -1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 12.));
+            trans = glm::rotate(trans, 1.5708f, glm::vec3(0., 1., 0.));
+            trans = glm::scale(trans, glm::vec3(3.f, 2.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
 
             // Draw grid
             drawGrid();
