@@ -50,20 +50,6 @@ string getCurrentDir() {
 }
 int main()
 {
-    //YsSoundPlayer player1;
-    //YsSoundPlayer::SoundData myWav1;
-    //if (YSOK == myWav1.LoadWav("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/solarsystem.wav")) {
-    //    canPlaySound = true;
-    //    // start the player after opening window
-    //    player1.Start();
-    //    player1.PlayOneShot(myWav1);
-    //    player1.PlayBackground(myWav1);
-    //}
-    //else {
-    //    cout << "Failed to read " << "click.wav" << endl;
-    //    return 1;
-    //}
-
     // glfw: initialize and configure
     // ------------------------------
     // load user interface
@@ -90,6 +76,8 @@ int main()
     // load city and uav model
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
+    string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
+    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
 
     // load flight control and dynamics model
     //uav uav_fc;
@@ -139,13 +127,17 @@ int main()
     YsSoundPlayer::SoundData myWav1;
 
     // store the filename of music
-    string fileNames[] = { "UAV1.wav", "UAV2.wav" };
+    string fileNames[] = { Path_to_Sound1, Path_to_Sound2 };
     // load user choice, note use of .c_str()
-    // if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+    
     if (true) {
-
-        //player1.Start();
-        //player1.PlayBackground(myWav1);
+        if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+            player1.Start();
+            player1.PlayBackground(myWav1);
+        }
+        else {
+            cout << "Failed to read " << "UAV1.wav" << endl;
+        }
         // build and compile shaders
         // -------------------------
         
@@ -218,9 +210,7 @@ int main()
             glfwPollEvents();
         }
     }
-    else {
-        cout << "Failed to read " << "UAV1.wav" << endl;
-    }
+
     
     
 
