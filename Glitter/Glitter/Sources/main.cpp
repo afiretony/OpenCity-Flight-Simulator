@@ -31,7 +31,7 @@ const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -218,8 +218,8 @@ int main()
 
             // draw another one
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
-            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            trans = glm::translate(trans, glm::vec3(10.0f, 10.0f, 0.));
+            trans = glm::scale(trans, 0.2f*glm::vec3(1.0f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV2.Draw(ourShader);
             // draw city
