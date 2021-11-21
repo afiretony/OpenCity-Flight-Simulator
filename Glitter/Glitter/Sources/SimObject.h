@@ -4,8 +4,8 @@
 
 
 class SimObject {
-private:
-	//Model ObjectModel;
+	//private:
+	//	Model ObjectModel;
 
 protected:
 	// define basic state of the obstacle

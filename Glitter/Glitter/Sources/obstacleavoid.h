@@ -3,10 +3,13 @@
 #include "flightcontrol.h"
 
 
-class obstacle{
+class obstacle : public SimObject{
 protected:
 	float Radius;
 
+public:
+	obstacle();
+	//obstacle(Model obstacleModel, glm::vec3  pos, glm::vec3 vel = glm::vec3(0.0f, 0.0f, 0.0f));
 };
 
 class detector {
