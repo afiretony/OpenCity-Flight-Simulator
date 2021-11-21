@@ -170,6 +170,7 @@ int main()
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
+        Model UAV2(Path_to_Model);
 
         // City model
         Model CITY1(Path_to_City1);
@@ -228,7 +229,7 @@ int main()
             //trans = glm::rotate(trans, glm::radians(90.0f), UAV_fc.getUavTwist());
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
-            UAV.Draw(ourShader);
+            UAV2.Draw(ourShader);
 
             trans = glm::translate(trans, glm::vec3(0., 6., 0.));
             trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
