@@ -2,36 +2,49 @@
 
 void uav::forward()
 {
-	F_motor.fx = thrust;
+	F_motor.x = thrust;
 }
 
 void uav::backward()
 {
-	F_motor.fx = -50.0;
+	F_motor.x = -thrust;
 }
 
 void uav::left()
 {
+	F_motor.z = thrust;
 }
 
 void uav::right()
 {
+	F_motor.z = -thrust;
 }
 
 void uav::up()
 {
+	F_motor.y = thrust;
 }
 
 void uav::down()
 {
+	F_motor.y = -thrust;
 }
 
 void uav::yawleft()
 {
+	// for update
 }
 
 void uav::yawright()
 {
+	// for update
+}
+void uav::hold()
+{
+	// set motor on hold
+	F_motor.x = 0.0;
+	F_motor.y = 0.0;
+	F_motor.z = 0.0;
 }
 
 void uav::dynamics()
@@ -40,46 +53,48 @@ void uav::dynamics()
 	// get called in main every loop
 	
 	// Air drag force calculation: 
-	F_drag.fx = -Drag_coeff * vel.vx * vel.vx;
-	F_drag.fy = -Drag_coeff * vel.vy * vel.vy;
-	F_drag.fz = -Drag_coeff * vel.vz * vel.vz;
+	F_drag.x = vel.x > 0 ? -Drag_coeff * vel.x * vel.x : Drag_coeff * vel.x * vel.x;
+	F_drag.y = vel.y > 0 ? -Drag_coeff * vel.y * vel.y : Drag_coeff * vel.y * vel.y;
+	F_drag.z = vel.z > 0 ? -Drag_coeff * vel.z * vel.z : Drag_coeff * vel.z * vel.z;
 
-	F_join.fx = F_motor.fx + F_drag.fx + F_coulomb.fx;
-	F_join.fy = F_motor.fy + F_drag.fy + F_coulomb.fy;
-	F_join.fz = F_motor.fz + F_drag.fz + F_coulomb.fz; // the drone will hover, we are not introducing gravity force
+	F_join.x = F_motor.x + F_drag.x + F_coulomb.x;
+	F_join.y = F_motor.y + F_drag.y + F_coulomb.y;
+	F_join.z = F_motor.z + F_drag.z + F_coulomb.z; // the drone will hover, we are not introducing gravity force
 
 	// calculate acceleration
-	acc.ax = F_join.fx / mass;
-	acc.ay = F_join.fy / mass;
-	acc.az = F_join.fz / mass;
+	acc.x = F_join.x / mass;
+	acc.y = F_join.y / mass;
+	acc.z = F_join.z / mass;
 
 	// calculate velocity
-	vel.vx += acc.ax * dt;
-	vel.vy += acc.ay * dt;
-	vel.vz += acc.az * dt;
+	vel.x += acc.x * dt;
+	vel.y += acc.y * dt;
+	vel.z += acc.z * dt;
 
 	// calculate position
-	pos.x += vel.vx * dt;
-	pos.y += vel.vy * dt;
-	pos.z += vel.vz * dt;
+	pos.x += vel.x * dt;
+	pos.y += vel.y * dt;
+	pos.z += vel.z * dt;
 
 }
 
-glm::vec3 uav::getUavPos()
+glm::vec3 uav::getUavTwist()
 {
-	return glm::vec3();
+	twist.x = -0.3 * vel.x;
+	twist.z = 0.3 * vel.z;
+	return twist;
 }
 
 void uav::switchToFirstPOV()
 {
-	cam.Px = pos.x;
-	cam.Py = pos.y;
-	cam.Pz = pos.z;
+	cam.x = pos.x;
+	cam.y = pos.y;
+	cam.z = pos.z;
 }
 
 void uav::switchToThirdPOV()
 {
-	cam.Px = pos.x + 10;
-	cam.Py = pos.y + 10;
-	cam.Pz = pos.z + 10;
+	cam.x = pos.x + 10;
+	cam.y = pos.y + 10;
+	cam.z = pos.z + 10;
 }
