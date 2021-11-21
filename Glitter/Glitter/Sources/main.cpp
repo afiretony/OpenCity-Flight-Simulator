@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-//#include "flightcontrol.h"
+#include "flightcontrol.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -23,7 +23,7 @@ using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, uav* UAV_fc);
 void drawGrid();
 
 // settings
@@ -40,26 +40,26 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-const char* vertexSource = R"glsl(
-    #version 150 core
-
-    in vec2 position;
-
-    void main()
-    {
-        gl_Position = vec4(position, 0.0, 1.0);
-    }
-)glsl";
-const char* fragmentSource = R"glsl(
-    #version 150 core
-
-    in vec2 position;
-
-    void main()
-    {
-        gl_Position = vec4(position, 0.0, 1.0);
-    }
-)glsl";
+//const char* vertexSource = R"glsl(
+//    #version 150 core
+//
+//    in vec2 position;
+//
+//    void main()
+//    {
+//        gl_Position = vec4(position, 0.0, 1.0);
+//    }
+//)glsl";
+//const char* fragmentSource = R"glsl(
+//    #version 150 core
+//
+//    in vec2 position;
+//
+//    void main()
+//    {
+//        gl_Position = vec4(position, 0.0, 1.0);
+//    }
+//)glsl";
 
 //// sound player
 //bool canPlaySound = false;
@@ -113,7 +113,7 @@ int main()
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
 
     // load flight control and dynamics model
-    //uav uav_fc;
+    uav UAV_fc;
     
     // load sound
     
@@ -184,11 +184,12 @@ int main()
             float currentFrame = glfwGetTime();
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
+            UAV_fc.getdeltatime(deltaTime);
             // cout << currentFrame << endl;
 
             // input
             // -----
-            processInput(window);
+            processInput(window, &UAV_fc);
 
             // render
             // ------
@@ -212,14 +213,16 @@ int main()
             ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
 
-            // draw another one
+            // test drone
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
+            //trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
+            trans = glm::translate(trans, UAV_fc.getUavPos());
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV2.Draw(ourShader);
+
             // Draw grid
-            drawGrid();
+            // drawGrid();
             
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -241,23 +244,33 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, uav* UAV_fc)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        camera.ProcessKeyboard(UP, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        camera.ProcessKeyboard(DOWN, deltaTime);
-
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        UAV_fc->forward();
+    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        UAV_fc->backward();
+    else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        UAV_fc->up();
+    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        UAV_fc->down();
+    else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        UAV_fc->left();
+    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        UAV_fc->right();
+    else
+        UAV_fc->hold();
+    UAV_fc->dynamics();
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
