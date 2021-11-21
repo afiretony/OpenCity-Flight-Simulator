@@ -31,7 +31,7 @@ const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera(glm::vec3(0.f, 10.f, 10.f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -170,7 +170,6 @@ int main()
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
-        Model UAV2(Path_to_Model);
 
         // City model
         Model CITY1(Path_to_City1);
@@ -211,17 +210,17 @@ int main()
             ourShader.setMat4("view", view);
 
             glm::mat4 trans = glm::mat4(1.0f); // what is this?
-            trans = glm::translate(trans, glm::vec3(0., -0.1, 0.)); // translate
-            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            trans = glm::translate(trans, glm::vec3(0., 8., 0.)); // translate
+            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
 
             // draw another one
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
-            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            trans = glm::translate(trans, glm::vec3(0., 6., 0.));
+            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
-            UAV2.Draw(ourShader);
+            UAV.Draw(ourShader);
             // draw city
             // change scale
             trans = glm::mat4(1.0f);
