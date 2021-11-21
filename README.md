@@ -40,7 +40,7 @@ cmake -G "Visual Studio 16 2019" ..
 
 After build, sln file is generated at `/24780-Engineers-Republic/Glitter/Build/Glitter.sln`, you can open the solution and start the project.
 
-### [Special notice] First run
+### [Important] First run
 Main file is located at `24780-Engineers-Republic\Glitter\Glitter\Sources\main.cpp`, at first run you need to build all solutions(by default solution configuration), Visual Studio may pop-up permission error after build. Then you should change Solution Glitter properties from `All_BUILD` to `Glitter`.
 
 ![Screenshot](/figures/vs_setup.png)
