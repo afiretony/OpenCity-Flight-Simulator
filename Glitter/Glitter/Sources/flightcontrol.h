@@ -22,35 +22,23 @@ using namespace std;
 
 struct position {
 	// position of the uav
-	float x;
-	float y;
-	float z;
 };
 
 struct velocity {
 	// velocity of the uav
-	float vx;
-	float vy;
-	float vz;
 };
  
 struct acceleration {
 	// acceleration of the uav
-	float ax;
-	float ay;
-	float az;
+	float ax, ay, az;
 };
 
 struct generalforce {
-	float fx;
-	float fy;
-	float fz;
+	float fx, fy, fz;
 };
 
 struct cameraPosition {
-	float Px;
-	float Py;
-	float Pz;
+	float Px, Py, Pz;
 };
 
 // comment added by shaobo: consider using glm::vec3 instead of 
