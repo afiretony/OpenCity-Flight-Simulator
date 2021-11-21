@@ -22,10 +22,12 @@ using namespace std;
 
 struct position {
 	// position of the uav
+	float x, y, z;
 };
 
 struct velocity {
 	// velocity of the uav
+	float vx, vy, vz;
 };
  
 struct acceleration {
