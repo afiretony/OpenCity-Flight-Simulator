@@ -28,7 +28,7 @@ private:
 	float thrust = 50.0;
 	float Drag_coeff = 10.0;
 	// define basic state of the uav
-	glm::vec3 pos = { 0.0, 0.0, 0.1 };
+	glm::vec3 pos = { 0.0, 6.0, 0.1 };
 	glm::vec3 twist = { 0.0, 0.0, 0.0 };
 	glm::vec3 vel = { 0.0, 0.0, 0.0 };
 	glm::vec3 acc = { 0.0, 0.0, 0.0 };
