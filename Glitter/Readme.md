@@ -1,2 +1,2 @@
 
-![Screenshot](../figures/vs_setup.png)
+![Screenshot](../figures/coordinate_sys.png)
