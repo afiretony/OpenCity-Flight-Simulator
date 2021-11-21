@@ -225,18 +225,50 @@ int main()
             // draw city
             // change scale
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(0., 0.2, 0.));
-            trans = glm::scale(trans, glm::vec3(0.01f, 0.01f, 0.01f));
+            trans = glm::translate(trans, glm::vec3(0., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
             ourShader.setMat4("model", trans);
             CITY1.Draw(ourShader);
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(3., 0.2, 0.));
-            trans = glm::scale(trans, glm::vec3(0.1f, 0.5f, 0.1f));
+            trans = glm::translate(trans, glm::vec3(3., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 3.f, 1.f));
             ourShader.setMat4("model", trans);
             CITY2.Draw(ourShader);
             trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(-4., 0.2, 0.));
-            trans = glm::scale(trans, glm::vec3(2.0f, 1.0f, 1.0f));
+            trans = glm::translate(trans, glm::vec3(-3., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 3.5f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 5.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 2.5f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 2.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
             ourShader.setMat4("model", trans);
             CITY3.Draw(ourShader);
 
