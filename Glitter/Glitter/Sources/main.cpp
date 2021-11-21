@@ -217,6 +217,11 @@ int main()
             trans = glm::mat4(1.0f);
             //trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
             trans = glm::translate(trans, UAV_fc.getUavPos());
+            
+            trans = glm::rotate(trans, UAV_fc.getUavTwist().z, glm::vec3(1., 0., 0.));
+            trans = glm::rotate(trans, UAV_fc.getUavTwist().x, glm::vec3(0., 0., 1.));
+            //trans = glm::rotate(trans, glm::radians(), glm::vec3(0., 0., 1.));
+            //trans = glm::rotate(trans, glm::radians(90.0f), UAV_fc.getUavTwist());
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV2.Draw(ourShader);
@@ -261,13 +266,13 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         UAV_fc->backward();
     else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        UAV_fc->up();
-    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        UAV_fc->down();
-    else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         UAV_fc->left();
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         UAV_fc->right();
+    else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        UAV_fc->up();
+    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        UAV_fc->down();
     else
         UAV_fc->hold();
     UAV_fc->dynamics();

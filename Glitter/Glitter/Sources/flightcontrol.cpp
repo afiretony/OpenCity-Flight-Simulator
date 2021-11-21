@@ -12,22 +12,22 @@ void uav::backward()
 
 void uav::left()
 {
-	F_motor.y = thrust;
+	F_motor.z = thrust;
 }
 
 void uav::right()
 {
-	F_motor.y = -thrust;
+	F_motor.z = -thrust;
 }
 
 void uav::up()
 {
-	F_motor.z = thrust;
+	F_motor.y = thrust;
 }
 
 void uav::down()
 {
-	F_motor.z = -thrust;
+	F_motor.y = -thrust;
 }
 
 void uav::yawleft()
@@ -45,14 +45,6 @@ void uav::hold()
 	F_motor.x = 0.0;
 	F_motor.y = 0.0;
 	F_motor.z = 0.0;
-}
-
-void uav::setCoulombF(glm::vec3 vec)
-{
-	F_coulomb.x = vec.x;
-	F_coulomb.y = vec.y;
-	F_coulomb.z = vec.z;
-
 }
 
 void uav::dynamics()
@@ -84,6 +76,13 @@ void uav::dynamics()
 	pos.y += vel.y * dt;
 	pos.z += vel.z * dt;
 
+}
+
+glm::vec3 uav::getUavTwist()
+{
+	twist.x = -0.3 * vel.x;
+	twist.z = 0.3 * vel.z;
+	return twist;
 }
 
 void uav::switchToFirstPOV()

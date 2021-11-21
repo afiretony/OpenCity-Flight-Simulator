@@ -28,7 +28,8 @@ private:
 	float thrust = 50.0;
 	float Drag_coeff = 10.0;
 	// define basic state of the uav
-	glm::vec3 pos={0.0, 0.0, 0.1};
+	glm::vec3 pos = { 0.0, 0.0, 0.1 };
+	glm::vec3 twist = { 0.0, 0.0, 0.0 };
 	glm::vec3 vel = { 0.0, 0.0, 0.0 };
 	glm::vec3 acc = { 0.0, 0.0, 0.0 };
 	glm::vec3 cam = { pos.x, pos.y, pos.z };
@@ -56,7 +57,7 @@ public:
 	void yawleft();
 	void yawright();
 	void hold();
-
+	
 	void getdeltatime(float deltatime) { dt = deltatime; }
 	void setCoulombF(glm::vec3 vec) { F_coulomb = vec; }
 	// calculate drone's current join force and accerelation
@@ -64,6 +65,8 @@ public:
 
 	// Added: get uav position
 	glm::vec3 getUavPos() { return glm::vec3(pos.x, pos.y, pos.z); };
+	glm::vec3 getUavTwist();
+
 	void switchToFirstPOV();
 	void switchToThirdPOV();
 };
