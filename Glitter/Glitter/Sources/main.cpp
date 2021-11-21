@@ -236,7 +236,7 @@ int main()
             CITY2.Draw(ourShader);
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(-4., 0.2, 0.));
-            trans = glm::scale(trans, glm::vec3(0.02f, 0.01f, 0.01f));
+            trans = glm::scale(trans, glm::vec3(2.0f, 1.0f, 1.0f));
             ourShader.setMat4("model", trans);
             CITY3.Draw(ourShader);
 
