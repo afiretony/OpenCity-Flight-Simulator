@@ -1,3 +1,16 @@
+// Head Maintainer: Chenhao Yang [yangchenhao@cmu.edu]
+// Collaborator(if any): 
+// 
+// Group project of 21fall 24780B Engineering Computation
+// Carnegie Mellon University
+// 
+// "flightcontorl.h" "flightcontorl.cpp"
+// functions:
+// 1. stores state(position, velocity, acceleration) of UAV
+// 2. calculates dynamics of UAV
+// 3. provides function calls for keyboard contorl
+//
+
 #pragma once
 #include<math.h>
 #include<iostream>
