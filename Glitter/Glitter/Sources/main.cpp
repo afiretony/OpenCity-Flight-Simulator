@@ -228,7 +228,7 @@ int main()
             //trans = glm::rotate(trans, glm::radians(90.0f), UAV_fc.getUavTwist());
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
-            UAV2.Draw(ourShader);
+            UAV.Draw(ourShader);
 
             trans = glm::translate(trans, glm::vec3(0., 6., 0.));
             trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
