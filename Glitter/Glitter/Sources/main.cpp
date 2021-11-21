@@ -205,7 +205,7 @@ int main()
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
-
+            //what
             // draw another one
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
