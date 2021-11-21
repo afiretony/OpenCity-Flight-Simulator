@@ -100,6 +100,11 @@ int main()
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
     string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
 
+    // Declear City Model
+    string Path_to_City1 = Path_to_Project + "Glitter/Glitter/Model/Building/building01.obj";
+    string Path_to_City2 = Path_to_Project + "Glitter/Glitter/Model/Building/building02.obj";
+    string Path_to_City3 = Path_to_Project + "Glitter/Glitter/Model/Building/building03.obj";
+
     // load flight control and dynamics model
     //uav uav_fc;
     
@@ -167,6 +172,11 @@ int main()
         Model UAV(Path_to_Model);
         Model UAV2(Path_to_Model);
 
+        // City model
+        Model CITY1(Path_to_City1);
+        Model CITY2(Path_to_City2);
+        Model CITY3(Path_to_City3);
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -205,13 +215,31 @@ int main()
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
-            //what
+
             // draw another one
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
             trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV2.Draw(ourShader);
+            // draw city
+            // change scale
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0.2, 0.));
+            trans = glm::scale(trans, glm::vec3(0.01f, 0.01f, 0.01f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0.2, 0.));
+            trans = glm::scale(trans, glm::vec3(0.1f, 0.5f, 0.1f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-4., 0.2, 0.));
+            trans = glm::scale(trans, glm::vec3(0.02f, 0.01f, 0.01f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+
             // Draw grid
             drawGrid();
             
