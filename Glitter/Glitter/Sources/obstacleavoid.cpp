@@ -15,3 +15,7 @@ glm::vec3 detector::getRepulse(obstacle* obst, uav* craft)
 	return glm::vec3();
 }
 
+obstacle::obstacle()
+{
+
+}

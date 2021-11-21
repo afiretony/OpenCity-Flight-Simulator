@@ -31,7 +31,7 @@ const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 768;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
+Camera camera(glm::vec3(0.f, 10.f, 10.f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -71,20 +71,6 @@ string getCurrentDir() {
 }
 int main()
 {
-    //YsSoundPlayer player1;
-    //YsSoundPlayer::SoundData myWav1;
-    //if (YSOK == myWav1.LoadWav("C:/Users/14846/Desktop/24780/HW/IndividualProject/Demo_zhanfany/Glitter/Glitter/Sources/solarsystem.wav")) {
-    //    canPlaySound = true;
-    //    // start the player after opening window
-    //    player1.Start();
-    //    player1.PlayOneShot(myWav1);
-    //    player1.PlayBackground(myWav1);
-    //}
-    //else {
-    //    cout << "Failed to read " << "click.wav" << endl;
-    //    return 1;
-    //}
-
     // glfw: initialize and configure
     // ------------------------------
     // load user interface
@@ -111,6 +97,13 @@ int main()
     // load city and uav model
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
+    string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
+    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
+
+    // Declear City Model
+    string Path_to_City1 = Path_to_Project + "Glitter/Glitter/Model/Building/building01.obj";
+    string Path_to_City2 = Path_to_Project + "Glitter/Glitter/Model/Building/building02.obj";
+    string Path_to_City3 = Path_to_Project + "Glitter/Glitter/Model/Building/building03.obj";
 
     // load flight control and dynamics model
     uav UAV_fc;
@@ -118,6 +111,7 @@ int main()
     // load sound
     
     glfwInit();
+    // Use OpenGL version 3.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -131,6 +125,7 @@ int main()
         glfwTerminate();
         return -1;
     }
+    // tell GLFW to make the context of our window the main context on the current thread
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
@@ -158,20 +153,28 @@ int main()
     YsSoundPlayer::SoundData myWav1;
 
     // store the filename of music
-    string fileNames[] = { "UAV1.wav", "UAV2.wav" };
+    string fileNames[] = { Path_to_Sound1, Path_to_Sound2 };
     // load user choice, note use of .c_str()
-    // if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+    
     if (true) {
-
-        //player1.Start();
-        //player1.PlayBackground(myWav1);
+        if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+            player1.Start();
+            player1.PlayBackground(myWav1);
+        }
+        else {
+            cout << "Failed to read " << "UAV1.wav" << endl;
+        }
         // build and compile shaders
         // -------------------------
         
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
-        Model UAV2(Path_to_Model);
+
+        // City model
+        Model CITY1(Path_to_City1);
+        Model CITY2(Path_to_City2);
+        Model CITY3(Path_to_City3);
 
         // render loop
         // -----------
@@ -208,13 +211,14 @@ int main()
             ourShader.setMat4("view", view);
 
             glm::mat4 trans = glm::mat4(1.0f); // what is this?
-            trans = glm::translate(trans, glm::vec3(0., -0.1, 0.)); // translate
-            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            trans = glm::translate(trans, glm::vec3(0., 8., 0.)); // translate
+            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
             ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
 
             // test drone
             trans = glm::mat4(1.0f);
+
             //trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
             trans = glm::translate(trans, UAV_fc.getUavPos());
             
@@ -226,6 +230,78 @@ int main()
             ourShader.setMat4("model", trans);
             UAV2.Draw(ourShader);
 
+            trans = glm::translate(trans, glm::vec3(0., 6., 0.));
+            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
+            ourShader.setMat4("model", trans);
+            UAV.Draw(ourShader);
+            // draw city
+            // change scale
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 3.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 0.));
+            trans = glm::scale(trans, glm::vec3(1.f, 3.5f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 5.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 3.));
+            trans = glm::scale(trans, glm::vec3(1.f, 2.5f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(3., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 2.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY3.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 6.));
+            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 9.));
+            trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY1.Draw(ourShader);
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(1.5, 0., 9.));
+            trans = glm::scale(trans, glm::vec3(3.f, 2.f, -1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(-3., 0., 12.));
+            trans = glm::rotate(trans, 1.5708f, glm::vec3(0., 1., 0.));
+            trans = glm::scale(trans, glm::vec3(3.f, 2.f, 1.f));
+            ourShader.setMat4("model", trans);
+            CITY2.Draw(ourShader);
+
             // Draw grid
             // drawGrid();
             
@@ -235,9 +311,7 @@ int main()
             glfwPollEvents();
         }
     }
-    else {
-        cout << "Failed to read " << "UAV1.wav" << endl;
-    }
+
     
     
 
