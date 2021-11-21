@@ -1,14 +1,11 @@
 #pragma once
-#include <vector>
-#include <glm/glm.hpp>
+#include "SimObject.h"
 #include "flightcontrol.h"
 
 
 class obstacle{
 protected:
-	// define basic state of the obstacle
-	glm::vec3  pos;   // most likely just position
-	glm::vec3  vel;  // velocity for moving obstacles
+	float Radius;
 
 };
 
