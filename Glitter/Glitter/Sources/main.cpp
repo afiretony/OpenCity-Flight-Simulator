@@ -40,6 +40,27 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+const char* vertexSource = R"glsl(
+    #version 150 core
+
+    in vec2 position;
+
+    void main()
+    {
+        gl_Position = vec4(position, 0.0, 1.0);
+    }
+)glsl";
+const char* fragmentSource = R"glsl(
+    #version 150 core
+
+    in vec2 position;
+
+    void main()
+    {
+        gl_Position = vec4(position, 0.0, 1.0);
+    }
+)glsl";
+
 //// sound player
 //bool canPlaySound = false;
 string getCurrentDir() {
@@ -71,12 +92,12 @@ int main()
     string Path_to_Project = getCurrentDir();
     cout << "Current working directory : " << Path_to_Project << endl;
     // when compiling using visual studio, current directory is usually .../Glitter/Glitter/build/debug
-    // we can use modify on this to cd to shader files
+    // we can use feature to cd to shader files
 
-    std::string t = "Glitter";
-    std::string::size_type i = Path_to_Project.find(t);
+    string t = "Glitter";
+    string::size_type i = Path_to_Project.find(t);
     // delete everything after(including) "Glitter"
-    if (i != std::string::npos)
+    if (i != string::npos)
         Path_to_Project.erase(i, Path_to_Project.length()-i);
     cout << "Path to Project is: " << Path_to_Project << endl;
     std::replace(Path_to_Project.begin(), Path_to_Project.end(), '\\', '/');
@@ -152,6 +173,7 @@ int main()
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
         Model UAV(Path_to_Model);
+        Model UAV2(Path_to_Model);
 
         // render loop
         // -----------
@@ -186,32 +208,21 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(0., -0.2, 0.));
-            model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
-            ourShader.setMat4("model", model);
+            glm::mat4 trans = glm::mat4(1.0f); // what is this?
+            trans = glm::translate(trans, glm::vec3(0., -0.1, 0.)); // translate
+            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            ourShader.setMat4("model", trans);
             UAV.Draw(ourShader);
 
-            //glColor3ub(0, 0, 255);
-            //// draw axes (x is red, y is green, z is blue)
-            //
-            //glLineWidth(8);
-            //glBegin(GL_LINES);
-
-            //glColor3ub(255, 0, 0);
-            //glVertex3i(-500, 0, 0);
-            //glVertex3i(500, 0, 0);
-
-            //glColor3ub(0, 255, 0);
-            //glVertex3i(0, -500, 0);
-            //glVertex3i(0, 500, 0);
-
-            //glColor3ub(0, 0, 255);
-            //glVertex3i(0, 0, -500);
-            //glVertex3i(0, 0, 500);
-
-            //glEnd();
-
+            // draw another one
+            trans = glm::mat4(1.0f);
+            trans = glm::translate(trans, glm::vec3(0., 0.1, 0.));
+            trans = glm::scale(trans, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
+            ourShader.setMat4("model", trans);
+            UAV2.Draw(ourShader);
+            // Draw grid
+            drawGrid();
+            
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
@@ -248,6 +259,7 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         camera.ProcessKeyboard(DOWN, deltaTime);
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
