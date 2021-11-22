@@ -48,7 +48,7 @@ private:
 
 public:
 	// constructor inherit
-	uav(std::string const& path, glm::vec3& s, glm::vec3& p = glm::vec3(0.0f, 6.0f, 0.1f), glm::vec3& v = glm::vec3(0.0f, 0.0f, 0.0f)) : SimObject(path, s, p, v) {};
+	uav(std::string const& path, glm::vec3 s, glm::vec3 p = glm::vec3(0.0f, 6.0f, 0.1f), glm::vec3 v = glm::vec3(0.0f, 0.0f, 0.0f)) : SimObject(path, s, p, v) {};
 
 	// override draw func
 	void Draw(Shader& shader) {

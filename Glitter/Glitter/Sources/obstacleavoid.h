@@ -4,10 +4,10 @@
 
 class obstacle : public SimObject{
 protected:
-	float Radius;
+	float radius;
 
 public:
-	obstacle(std::string const& path, glm::vec3& s, glm::vec3& p, glm::vec3& v = glm::vec3(0.0f, 0.0f, 0.0f)) : SimObject(path, s, p, v) {};
+	obstacle(float radius, std::string const& path, glm::vec3 s, glm::vec3 p, glm::vec3 v = glm::vec3(0.0f, 0.0f, 0.0f)) : SimObject(path, s, p, v) {};
 };
 
 class detector {
