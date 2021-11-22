@@ -38,10 +38,10 @@ private:
 	float mass = 3.0; // mass, kg
 
 	// internal and external forces
-	glm::vec3 F_motor = { 0.0, 0.0, 0.0 };	// force provided by motors
-	glm::vec3 F_drag = { 0.0, 0.0, 0.0 };	// froce by air drag
-	glm::vec3 F_coulomb = { 0.0, 0.0, 0.0 }; // Repulsive coulomb force
-	glm::vec3 F_join = { 0.0, 0.0, 0.0 };	// join force
+	glm::vec3 F_motor = { 0.0, 0.0, 0.0 };		// force provided by motors
+	glm::vec3 F_drag = { 0.0, 0.0, 0.0 };		// froce by air drag
+	glm::vec3 F_coulomb = { 0.0, 0.0, 0.0 };	// Repulsive coulomb force
+	glm::vec3 F_join = { 0.0, 0.0, 0.0 };		// join force
 	
 	// delta time
 	float dt = 0.0;
