@@ -25,8 +25,8 @@ using namespace std;
 class uav {
 private:
 	// thrust force of the model
-	float thrust = 50.0;
-	float Drag_coeff = 10.0;
+	float thrust = 20.0;
+	float Drag_coeff = 5.0;
 	// define basic state of the uav
 	glm::vec3 pos = { 0.0, 6.0, 0.1 };
 	glm::vec3 twist = { 0.0, 0.0, 0.0 };

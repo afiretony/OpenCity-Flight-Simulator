@@ -52,14 +52,22 @@ void uav::dynamics()
 	// dynamics of uav 
 	// get called in main every loop
 	
+	// manual "stops" if speed lower than threshould
+	if (double(F_motor.x) + double(F_motor.y) + double(F_motor.z) == 0.0) {
+		if (abs(vel.x) < 0.15) vel.x = 0;
+		if (abs(vel.y) < 0.15) vel.y = 0;
+		if (abs(vel.z) < 0.15) vel.z = 0;
+	}
+	else Drag_coeff = 5.0;
+
 	// Air drag force calculation: 
 	F_drag.x = vel.x > 0 ? -Drag_coeff * vel.x * vel.x : Drag_coeff * vel.x * vel.x;
 	F_drag.y = vel.y > 0 ? -Drag_coeff * vel.y * vel.y : Drag_coeff * vel.y * vel.y;
 	F_drag.z = vel.z > 0 ? -Drag_coeff * vel.z * vel.z : Drag_coeff * vel.z * vel.z;
 
 	F_join.x = F_motor.x + F_drag.x + F_coulomb.x;
-	F_join.y = F_motor.y + F_drag.y + F_coulomb.y;
-	F_join.z = F_motor.z + F_drag.z + F_coulomb.z; // the drone will hover, we are not introducing gravity force
+	F_join.y = F_motor.y + F_drag.y + F_coulomb.y; // the drone will hover, we are not introducing gravity force
+	F_join.z = F_motor.z + F_drag.z + F_coulomb.z; 
 
 	// calculate acceleration
 	acc.x = F_join.x / mass;
