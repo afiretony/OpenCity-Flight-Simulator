@@ -31,8 +31,8 @@ void processInput(GLFWwindow* window, uav* UAV_fc);
 void drawGrid();
 
 // settings
-const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 768;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1000;
 
 // camera
 Camera camera(glm::vec3(0.f, 10.f, 10.f));
@@ -43,27 +43,6 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-//const char* vertexSource = R"glsl(
-//    #version 150 core
-//
-//    in vec2 position;
-//
-//    void main()
-//    {
-//        gl_Position = vec4(position, 0.0, 1.0);
-//    }
-//)glsl";
-//const char* fragmentSource = R"glsl(
-//    #version 150 core
-//
-//    in vec2 position;
-//
-//    void main()
-//    {
-//        gl_Position = vec4(position, 0.0, 1.0);
-//    }
-//)glsl";
 
 //// sound player
 //bool canPlaySound = false;
@@ -81,7 +60,7 @@ int main()
     
     string Path_to_Project = getCurrentDir();
     cout << "Current working directory : " << Path_to_Project << endl;
-    // when compiling using visual studio, current directory is usually .../Glitter/Glitter/build/debug
+    // when compiling using visual studio, current directory is usually .../[Path to your project]/Glitter/Build/Debug
     // we can use feature to cd to shader files
 
     string t = "Glitter";
@@ -203,7 +182,7 @@ int main()
 
             // render
             // ------
-            glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             
             // enable shader before setting uniforms
@@ -341,6 +320,10 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
         UAV_fc->up();
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         UAV_fc->down();
+    else if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+        UAV_fc->yawright();
+    else if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+        UAV_fc->yawleft();
     else
         UAV_fc->hold();
     UAV_fc->dynamics();

@@ -30,7 +30,7 @@ private:
 	//glm::vec3 pos = { 0.0, 6.0, 0.1 };
 	//glm::vec3 vel = { 0.0, 0.0, 0.0 };
 
-	glm::vec3 twist = { 0.0, 0.0, 0.0 };
+	glm::vec3 twist = { 0.0, 0.0, 0.0};
 	glm::vec3 acc = { 0.0, 0.0, 0.0 };
 	glm::vec3 cam = { pos.x, pos.y, pos.z };
 
@@ -57,10 +57,10 @@ public:
 		trans = glm::scale(trans, scalar);
 
 		// additional rotation info
-		trans = glm::rotate(trans, twist.z, glm::vec3(1., 0., 0.));
-		trans = glm::rotate(trans, twist.x, glm::vec3(0., 0., 1.));
-		//trans = glm::rotate(trans, glm::radians(), glm::vec3(0., 0., 1.));
-		//trans = glm::rotate(trans, glm::radians(90.0f), UAV_fc.getUavTwist());
+		trans = glm::rotate(trans, twist.z, glm::vec3(cos(twist.y), 0., -sin(twist.y)));
+		trans = glm::rotate(trans, twist.x, glm::vec3(sin(twist.y), 0., cos(twist.y)));
+		trans = glm::rotate(trans, -1.570796f, glm::vec3(0., 1., 0.));
+		trans = glm::rotate(trans, twist.y, glm::vec3(0., 1., 0.));
 
 		shader.setMat4("model", trans);
 		ObjectModel.Draw(shader);
@@ -103,12 +103,12 @@ void uav::backward()
 
 void uav::left()
 {
-	F_motor.z = thrust;
+	F_motor.z = -thrust;
 }
 
 void uav::right()
 {
-	F_motor.z = -thrust;
+	F_motor.z = thrust;
 }
 
 void uav::up()
@@ -123,12 +123,12 @@ void uav::down()
 
 void uav::yawleft()
 {
-	// for update
+	twist.y += 0.001; // in radians, so it has to be very small
 }
 
 void uav::yawright()
 {
-	// for update
+	twist.y -= 0.001;
 }
 void uav::hold()
 {
@@ -171,10 +171,20 @@ void uav::dynamics()
 	vel.z += acc.z * dt;
 
 	// calculate position
-	pos.x += vel.x * dt;
+	float temp_x = vel.x * dt;
+	float temp_z = vel.z * dt;
+	pos.x += temp_x * cos(twist.y) + temp_z * sin(twist.y);
+	pos.z += temp_z * cos(twist.y) - temp_x * sin(twist.y);
 	pos.y += vel.y * dt;
-	pos.z += vel.z * dt;
 
+	 //pos.x += vel.x * dt;
+	 //pos.y += vel.y * dt;
+	 //pos.z += vel.z * dt;
+
+	// calculate twist angle of the UAV, 
+	// which is by definition proportional to the velocity
+	twist.x = -0.3 * vel.x;
+	twist.z = 0.3 * vel.z;
 }
 
 glm::vec3 uav::getUavTwist()
