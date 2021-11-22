@@ -50,6 +50,22 @@ public:
 	// constructor inherit
 	uav(std::string const& path, glm::vec3& s, glm::vec3& p = glm::vec3(0.0f, 6.0f, 0.1f), glm::vec3& v = glm::vec3(0.0f, 0.0f, 0.0f)) : SimObject(path, s, p, v) {};
 
+	// override draw func
+	void Draw(Shader& shader) {
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, pos); // translate
+		trans = glm::scale(trans, scalar);
+
+		// additional rotation info
+		trans = glm::rotate(trans, twist.z, glm::vec3(1., 0., 0.));
+		trans = glm::rotate(trans, twist.x, glm::vec3(0., 0., 1.));
+		//trans = glm::rotate(trans, glm::radians(), glm::vec3(0., 0., 1.));
+		//trans = glm::rotate(trans, glm::radians(90.0f), UAV_fc.getUavTwist());
+
+		shader.setMat4("model", trans);
+		ObjectModel.Draw(shader);
+	}
+
 	// basic controls
 	void forward();
 	void backward();

@@ -17,6 +17,8 @@
 #include <filesystem>
 
 #include "SimObject.h"
+#include "obstacleavoid.h"
+
 //#include "yssimplesound.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
@@ -177,7 +179,7 @@ int main()
         uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));  
         
         // City model
-        Model CITY1(Path_to_City1);
+        obstacle CITY1(Path_to_City1, glm::vec3(1.f, 4.f, 1.f), glm::vec3(0., 0., 0.));
         Model CITY2(Path_to_City2);
         Model CITY3(Path_to_City3);
 
