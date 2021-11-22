@@ -15,6 +15,8 @@
 #include <limits.h>
 #include <iostream>
 #include <filesystem>
+
+#include "SimObject.h"
 //#include "yssimplesound.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
@@ -106,7 +108,7 @@ int main()
     string Path_to_City3 = Path_to_Project + "Glitter/Glitter/Model/Building/building03.obj";
 
     // load flight control and dynamics model
-    uav UAV_fc;
+    //uav UAV_fc;
     
     // load sound
     
@@ -169,9 +171,11 @@ int main()
         
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
-        Model UAV(Path_to_Model);
-        Model UAV2(Path_to_Model);
 
+        // load flight control and dynamics model
+        // SimObject init: file path, scalar, position
+        uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));  
+        
         // City model
         Model CITY1(Path_to_City1);
         Model CITY2(Path_to_City2);
@@ -211,23 +215,13 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            glm::mat4 trans = glm::mat4(1.0f); 
-            trans = glm::translate(trans, glm::vec3(0., 8., 0.)); // translate
-            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
-            ourShader.setMat4("model", trans);
-            UAV.Draw(ourShader);
+            // draw UAV (physical update is integrated in class)
+            UAV_fc.Draw(ourShader);
 
-            // test drone
-            trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, UAV_fc.getUavPos());
-            trans = glm::rotate(trans, UAV_fc.getUavTwist().z, glm::vec3(1., 0., 0.));
-            trans = glm::rotate(trans, UAV_fc.getUavTwist().x, glm::vec3(0., 0., 1.));
-            trans = glm::scale(trans, glm::vec3(0.05f, 0.05f, 0.05f));	// it's a bit too big for our scene, so scale it down
-            ourShader.setMat4("model", trans);
-            UAV2.Draw(ourShader);
 
             // draw city
             // change scale
+            glm::mat4 trans = glm::mat4(1.0f); 
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(0., 0., 0.));
             trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
