@@ -15,7 +15,7 @@
 #include <limits.h>
 #include <iostream>
 #include <filesystem>
-
+#include <glm/gtx/norm.hpp>
 #include "SimObject.h"
 #include "obstacleavoid.h"
 
@@ -140,13 +140,6 @@ int main()
     // load user choice, note use of .c_str()
     
     if (true) {
-        if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
-            player1.Start();
-            player1.PlayBackground(myWav1);
-        }
-        else {
-            cout << "Failed to read " << "UAV1.wav" << endl;
-        }
         // build and compile shaders
         // -------------------------
         
@@ -156,7 +149,17 @@ int main()
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
         uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));  
-        
+
+        float volume;
+
+        if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
+            player1.Start();
+            player1.SetVolume(myWav1, 0.5);
+            player1.PlayBackground(myWav1);
+        }
+        else {
+            cout << "Failed to read " << "UAV1.wav" << endl;
+        }
         // City model
         obstacle CITY1(4.0f, Path_to_City1, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
         obstacle CITY2(4.0f, Path_to_City2, glm::vec3(1.0f, 3.0f, 1.0f), glm::vec3(3.0f, 0.0f, 0.0f));
@@ -166,7 +169,12 @@ int main()
         // -----------
         while (!glfwWindowShouldClose(window))
         {
-
+            if (UAV_fc.GetNormVel() > 0)
+                volume = UAV_fc.GetNormVel() / 2 + 0.5;
+            else
+                volume = 0.5;
+            //cout << UAV_fc.GetNormVel() << endl;
+            player1.SetVolume(myWav1, volume);
             // per-frame time logic
             // --------------------
             
@@ -195,6 +203,8 @@ int main()
             // view/projection transformations
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
+
+
 
             // draw UAV (physical update is integrated in class)
             UAV_fc.Draw(ourShader);

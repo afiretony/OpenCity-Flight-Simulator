@@ -6,6 +6,7 @@
 //#include <glm/glm.hpp>
 
 #include <model.h>
+#include <cmath>
 
 class SimObject{
 protected:
@@ -30,6 +31,7 @@ public:
 	void UpdateScale(glm::vec3 s);
 	void UpdatePos(glm::vec3 p);
 	void UpdateVel(glm::vec3 v);
+	float GetNormVel();
 };
 
 SimObject::SimObject(std::string const& path, glm::vec3 s, glm::vec3 p, glm::vec3 v)
@@ -55,6 +57,15 @@ inline void SimObject::UpdatePos(glm::vec3 p)
 inline void SimObject::UpdateVel(glm::vec3 v)
 {
 	vel = v;
+}
+
+inline float SimObject::GetNormVel()
+{
+	float vx = vel.x;
+	float vy = vel.y;
+	float vz = vel.z;
+	float v = sqrtf(vx * vx + vy * vy + vz * vz);
+	return v;
 }
 
 #endif
