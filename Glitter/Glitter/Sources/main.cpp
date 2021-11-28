@@ -376,7 +376,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 void drawGrid() {
-    int i = 0;
+  /*  int i = 0;
     for (int i = 0; i < 40; i++) {
         glPushMatrix();
         if (i < 20)
@@ -390,5 +390,5 @@ void drawGrid() {
         glColor3f(1, 1, 1); glVertex3f(19, -0.1, 0);
         glEnd();
         glPopMatrix();
-    }
+    }*/
 }
