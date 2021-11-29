@@ -132,14 +132,13 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-
+    // load UAV sound effect
     YsSoundPlayer player1;
     YsSoundPlayer::SoundData myWav1;
 
     // store the filename of music
     string fileNames[] = { Path_to_Sound1, Path_to_Sound2 };
-    // load user choice, note use of .c_str()
-    
+
     if (true) {
         // build and compile shaders
         // -------------------------
@@ -151,8 +150,9 @@ int main()
         // SimObject init: file path, scalar, position
         uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));  
 
+        //set initial volume at first display of UAV
         float volume;
-
+        // load user choice, note use of .c_str()
         if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
             player1.Start();
             player1.SetVolume(myWav1, 0.5);
@@ -166,10 +166,15 @@ int main()
         obstacle CITY2(4.0f, Path_to_City2, glm::vec3(1.0f, 3.0f, 1.0f), glm::vec3(3.0f, 0.0f, 0.0f));
         obstacle CITY3(4.0f, Path_to_City3, glm::vec3(1.0f, 3.5f, 1.0f), glm::vec3(-3.0f, 0.0f, 0.0f));
 
+        //intialize point of view status
+        bool firstPOV = true;
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
+
+            // program dynamic UAV sound effect volume
             if (UAV_fc.GetNormVel() > 0)
                 volume = UAV_fc.GetNormVel() / 2 + 0.5;
             else
@@ -206,10 +211,25 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-
-
             // draw UAV (physical update is integrated in class)
             UAV_fc.Draw(ourShader);
+
+            // specificy Z and X key to switch between first and third POV
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+                firstPOV = true;
+            else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+                firstPOV = false;
+
+            if (firstPOV == false) {
+                glm::vec3 cameraPosition;
+                cameraPosition = UAV_fc.getUavPos();
+                camera.Position.x = cameraPosition.x-1;
+                camera.Position.y = cameraPosition.y+1;
+                camera.Position.z = cameraPosition.z;
+            }
+            else {
+                camera.Position = UAV_fc.getUavPos();
+            }
 
 
             // draw city
@@ -312,14 +332,14 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+    //else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(FORWARD, deltaTime);
+    //else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(BACKWARD, deltaTime);
+    //else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(LEFT, deltaTime);
+    //else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //    camera.ProcessKeyboard(RIGHT, deltaTime);
     else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         UAV_fc->forward();
     else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
@@ -328,13 +348,13 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
         UAV_fc->left();
     else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         UAV_fc->right();
-    else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         UAV_fc->up();
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         UAV_fc->down();
-    else if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         UAV_fc->yawright();
-    else if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         UAV_fc->yawleft();
     else
         UAV_fc->hold();
