@@ -126,7 +126,7 @@ public:
     }
 
     void tiltVerticalWithUAV(float rad) {
-        WorldUp.y = cosf(rad);//working on
+        WorldUp.y = cosf(rad);//working on. Potential problem is when rotate to the other side, the tilt is reversed
         WorldUp.x = sinf(rad);
         updateCameraVectors();
     }

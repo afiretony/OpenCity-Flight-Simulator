@@ -148,7 +148,7 @@ int main()
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(-1., 0., -3.));  //second glm change initial landed location of UAV
+        uav UAV_fc(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-1., 0., -3.));  //second glm change initial landed location of UAV
 
         //set initial volume at first display of UAV
         float volume;
