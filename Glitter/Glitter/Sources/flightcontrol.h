@@ -123,12 +123,12 @@ void uav::down()
 
 void uav::yawleft()
 {
-	twist.y += 0.001; // in radians, so it has to be very small
+	twist.y += 0.01; // in radians, so it has to be very small
 }
 
 void uav::yawright()
 {
-	twist.y -= 0.001;
+	twist.y -= 0.01;
 }
 void uav::hold()
 {
