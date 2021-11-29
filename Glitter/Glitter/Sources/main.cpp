@@ -147,7 +147,7 @@ int main()
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));  
+        uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(-1., 0., -3.));  //second glm change initial landed location of UAV
 
         //set initial volume at first display of UAV
         float volume;
@@ -209,8 +209,6 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            // draw UAV (physical update is integrated in class)
-            UAV_fc.Draw(ourShader);
 
             // specificy Z and X key to switch between first and third POV
             if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
@@ -218,15 +216,33 @@ int main()
             else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
                 firstPOV = false;
 
+            //distance from camera to UAV
+            float distance = 1;
+            glm::vec3 cameraPosition;
+            float cameraYaw, cameraPitch, cameraRoll;
+
+            cameraPosition = UAV_fc.getUavPos();
+            cameraYaw = UAV_fc.getUavTwist().y;
+            cameraPitch = UAV_fc.getUavTwist().x;
+            cameraRoll = UAV_fc.getUavTwist().z;
+
             if (firstPOV == false) {
-                glm::vec3 cameraPosition;
-                cameraPosition = UAV_fc.getUavPos();
-                camera.Position.x = cameraPosition.x-1;
-                camera.Position.y = cameraPosition.y+1;
-                camera.Position.z = cameraPosition.z;
+                // draw UAV (physical update is integrated in class)
+                UAV_fc.Draw(ourShader);
+
+                camera.Position.x = cameraPosition.x - distance * cosf(cameraYaw);//cos
+                camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
+                camera.Position.z = cameraPosition.z + distance * sinf(cameraYaw); //sin
+                camera.rotateWithUAV(-cameraYaw);
+                camera.Pitch = -45.f;
+                //camera.tiltHorizontalWithUAV(cameraPitch - 45.f);
             }
             else {
+                // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc.getUavPos();
+                camera.rotateWithUAV(-cameraYaw);
+                camera.tiltHorizontalWithUAV(cameraPitch);
+                camera.tiltVerticalWithUAV(-cameraRoll);
             }
 
 
@@ -312,6 +328,8 @@ int main()
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
             glfwPollEvents();
+
+            /*cout << UAV_fc.getUavPos().x << "  " << UAV_fc.getUavPos().y << "  " << UAV_fc.getUavPos().z << endl;*/
         }
     }
 
@@ -338,10 +356,10 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     //    camera.ProcessKeyboard(LEFT, deltaTime);
     //else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     //    camera.ProcessKeyboard(RIGHT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        UAV_fc->forward();
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
+        UAV_fc->forward();    
     else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        UAV_fc->backward();
+        UAV_fc->backward();    
     else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         UAV_fc->left();
     else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
@@ -351,9 +369,9 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         UAV_fc->down();
     else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        UAV_fc->yawright();
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         UAV_fc->yawleft();
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        UAV_fc->yawright();
     else
         UAV_fc->hold();
     UAV_fc->dynamics();

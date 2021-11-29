@@ -85,9 +85,6 @@ public:
 	// Added: get uav position
 	glm::vec3 getUavPos() { return glm::vec3(pos.x, pos.y, pos.z); };
 	glm::vec3 getUavTwist();
-
-	void switchToFirstPOV();
-	void switchToThirdPOV();
 };
 
 
@@ -192,18 +189,4 @@ glm::vec3 uav::getUavTwist()
 	twist.x = -0.3 * vel.x;
 	twist.z = 0.3 * vel.z;
 	return twist;
-}
-
-void uav::switchToFirstPOV()
-{
-	cam.x = pos.x;
-	cam.y = pos.y;
-	cam.z = pos.z;
-}
-
-void uav::switchToThirdPOV()
-{
-	cam.x = pos.x + 10;
-	cam.y = pos.y + 10;
-	cam.z = pos.z + 10;
 }
