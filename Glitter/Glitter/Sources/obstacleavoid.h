@@ -12,18 +12,18 @@ public:
 
 };
 
-class detector {
-private:
-	float tolerance;
-
-	uav myUAV;
-	Map myCity;
-	glm::vec3 getForwardDir(obstacle* obst, uav* craft);
-	
-public:
-	detector(Map& city, uav& drone);
-
-	// check if an obstacle should be in map 
-	bool isInMap(obstacle obst, std::vector<obstacle> list, glm::vec3 fwdDir);
-	glm::vec3 getRepulse(obstacle* obst, uav* craft);
-};
+//class detector {
+//private:
+//	float tolerance;
+//
+//	uav myUAV;
+//	Map myCity;
+//	glm::vec3 getForwardDir(obstacle* obst, uav* craft);
+//	
+//public:
+//	detector(Map& city, uav& drone);
+//
+//	// check if an obstacle should be in map 
+//	bool isInMap(obstacle obst, std::vector<obstacle> list, glm::vec3 fwdDir);
+//	glm::vec3 getRepulse(obstacle* obst, uav* craft);
+//};
