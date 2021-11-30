@@ -32,8 +32,8 @@
 //void drawGrid();
 //
 //// settings
-//const unsigned int SCR_WIDTH = 1600;
-//const unsigned int SCR_HEIGHT = 1000;
+//const unsigned int SCR_WIDTH = 1024
+//const unsigned int SCR_HEIGHT = 768;
 //
 //// camera
 //Camera camera(glm::vec3(0.f, 10.f, 10.f));
@@ -244,8 +244,8 @@
 //                // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
 //                camera.Position = UAV_fc.getUavPos();
 //                camera.rotateWithUAV(-cameraYaw);
-//                camera.tiltHorizontalWithUAV(cameraPitch);
-//                camera.tiltVerticalWithUAV(-cameraRoll);
+//                //camera.tiltHorizontalWithUAV(cameraPitch);
+//                //camera.tiltVerticalWithUAV(-cameraRoll);
 //            }
 //
 //
@@ -452,7 +452,10 @@
 #include <limits.h>
 #include <iostream>
 #include <filesystem>
-//#include "yssimplesound.h"
+
+#include "map.h"
+#include "SimObject.h"
+#include "obstacleavoid.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
 using namespace std;
@@ -509,7 +512,7 @@ int main()
 
     // load city and uav model
     // Declear UAV Model
-    string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/City2/wholeCity.obj";
+    //string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/City2/wholeCity.obj";
 
     // load flight control and dynamics model
     //uav uav_fc;
@@ -560,6 +563,33 @@ int main()
     string fileNames[] = { "UAV1.wav", "UAV2.wav" };
     // load user choice, note use of .c_str()
     // if (YSOK == myWav1.LoadWav(fileNames[0].c_str())) {
+
+    // Test map  ============================================================================
+    const int maxID = 1;
+    Map cityMap(3, 3, maxID, Path_to_Project);
+
+    //cityMap.randMap(maxID);
+    //vector<string> Path_to_Models;
+    //vector<obstacle> CITY;
+    //for (int i = 0; i < maxID; i++) {
+    //    Path_to_Models.push_back(Path_to_Project + "Glitter/Glitter/Model/City2/city" + to_string(i + 1) + ".obj");
+    //}
+
+    ////int id = 0;
+    //glm::vec3 pos = glm::vec3(1.0f, 1.0f, 1.0f);
+    ////cout << Path_to_Models.at(id) << endl;
+    //obstacle currBuild(4.0f, Path_to_Models.at(id), glm::vec3(1.0f, 1.0f, 1.0f), pos);
+    //CITY.push_back(currBuild);
+
+    //for (auto& grid : cityMap.grids_map) {
+    //    int id = grid.id;
+    //    glm::vec3 pos = grid.coord;
+    //    cout << Path_to_Models.at(id) << endl;
+    //    obstacle currBuild(4.0f, Path_to_Models.at(id), glm::vec3(1.0f, 1.0f, 1.0f), pos);
+    //    CITY.push_back(currBuild);
+    //}
+    // ======================================================================================
+
     if (true) {
 
         //player1.Start();
@@ -569,7 +599,7 @@ int main()
 
         Shader ourShader(path1, path2);
         cout << "shader loaded" << endl;
-        Model UAV(Path_to_Model);
+        //Model UAV(Path_to_Model);
 
         // render loop
         // -----------
@@ -604,18 +634,21 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            glm::mat4 trans = glm::mat4(1.0f); 
-            trans = glm::mat4(1.0f);
-            trans = glm::translate(trans, glm::vec3(0., 0., 0.));
-            trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
-            ourShader.setMat4("model", trans);
-            UAV.Draw(ourShader);
+            //glm::mat4 trans = glm::mat4(1.0f); 
+            //trans = glm::mat4(1.0f);
+            //trans = glm::translate(trans, glm::vec3(0., 0., 0.));
+            //trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
+            //ourShader.setMat4("model", trans);
+            /*UAV.Draw(ourShader);*/
 
             //glm::mat4 model = glm::mat4(1.0f);
             //model = glm::translate(model, glm::vec3(0., -0.2, 0.));
             //model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));	// it's a bit too big for our scene, so scale it down
             //ourShader.setMat4("model", model);
             //UAV.Draw(ourShader);
+            for (auto& grid : cityMap.grids_map) {
+                grid.block->Draw(ourShader);
+            }
 
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
