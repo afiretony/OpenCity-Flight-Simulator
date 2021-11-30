@@ -32,6 +32,9 @@ public:
     string directory;
     bool gammaCorrection;
 
+    // Added: model height
+    float height = 0.0f;
+
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
     {
@@ -104,6 +107,9 @@ private:
             vector.y = mesh->mVertices[i].y;
             vector.z = mesh->mVertices[i].z;
             vertex.Position = vector;
+
+            // get height
+            if (vector.y >= height) height = vector.y;
 
             //printf("-v x: %d, y: %d, z: %d \n", vector.x, vector.y, vector.z);
             // 
