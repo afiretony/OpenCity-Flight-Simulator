@@ -24,8 +24,8 @@ public:
 		//std::cout << "POS:" << pos.x << "\t" << pos.y << "\t" << pos.z << endl;
 		//std::cout << "Dir:" << directory << endl;
 		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::translate(trans, pos); // translate
 		trans = glm::scale(trans, scalar);
+		trans = glm::translate(trans, pos); // translate		
 		shader.setMat4("model", trans);
 		ObjectModel.Draw(shader);
 	}

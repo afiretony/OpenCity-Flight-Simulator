@@ -30,6 +30,8 @@ public:
 
 	// random generated map
 	void randMap(int maxId);
+
+	void loadMap(int maxId);
 };
 
 Map::Map(int row, int col, int maxId, const string path)
@@ -37,7 +39,8 @@ Map::Map(int row, int col, int maxId, const string path)
 	num_row = row;
 	num_col = col;
 	Path_to_Project = path;
-	randMap(maxId);
+	//randMap(maxId);
+	loadMap(maxId);
 }
 
 inline Map::~Map()
@@ -46,21 +49,6 @@ inline Map::~Map()
 		delete grid.block;
 	}
 }
-
-//inline void Map::regModel(const int m_id)
-//{
-//	grid m_grid;
-//	m_grid.id = m_id;
-//	grids_map.push_back(m_grid);
-//}
-
-//inline std::vector<grid>::iterator Map::findModel(const int m_id)
-//{
-//	//std::vector<grid>::iterator it;
-//	const auto it = std::find_if(grids_map.begin(), grids_map.end(), 
-//								[m_id](const grid& curr) {return curr.id == m_id; });
-//	return it;
-//}
 
 inline void Map::randMap(int maxId)
 {
@@ -74,7 +62,53 @@ inline void Map::randMap(int maxId)
 		currGrid.coord.z = idx_row * grid_len + grid_len / 2;
 		currGrid.id = 0 + rand() % maxId;
 		string Path_to_Models = Path_to_Project + "Glitter/Glitter/Model/City2/city" + to_string(currGrid.id + 1) + ".obj";
-		currGrid.block = new obstacle(4.0f, Path_to_Models, glm::vec3(1.0f, 1.0f, 1.0f), currGrid.coord);
+		currGrid.block = new obstacle(4.0f, Path_to_Models, glm::vec3(100.0f, 100.0f, 100.0f), currGrid.coord);
 	}
 }
+inline void Map::loadMap(int maxId)
+{
+	string inFileName;
+	ifstream inFile;
+	inFileName = Path_to_Project + "Glitter/Glitter/Model/City2/map.txt";
+
+	inFile.open(inFileName);
+
+	if (inFile.is_open()) {
+		grids_map.clear();
+
+		std::string wholeLineString;
+		std::stringstream wholeLineStream;
+		bool continueReading = true;
+		int id;
+
+		int i = 0;
+		// go through file
+		while (!inFile.eof() && continueReading) {
+			// read the whole line
+			getline(inFile, wholeLineString);
+			wholeLineStream.str(wholeLineString.substr(0));
+			
+			wholeLineStream >> id;
+
+			grid currGrid;
+			currGrid.id = id;
+
+			int idx_row = floor(i / num_row);
+			int idx_col = i % num_col;
+			currGrid.coord.x = idx_col * grid_len + grid_len / 2;
+			currGrid.coord.y = 0;
+			currGrid.coord.z = idx_row * grid_len + grid_len / 2;
+
+			string Path_to_Models = Path_to_Project + "Glitter/Glitter/Model/City2/city" + to_string(currGrid.id + 1) + ".obj";
+			currGrid.block = new obstacle(4.0f, Path_to_Models, glm::vec3(100.0f, 100.0f, 100.0f), currGrid.coord);
+			grids_map.push_back(currGrid);
+			i++;
+			wholeLineStream.clear(); // get ready for next line
+		}
+		inFile.close();
+	}
+	else
+		cout << "Was not able to open " << inFileName << " for input. " << endl;
+}
+
 #endif

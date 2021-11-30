@@ -19,6 +19,7 @@
 #include "SimObject.h"
 #include "obstacleavoid.h"
 #include "yssimplesound.h"
+#include "map.h"
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
 using namespace std;
@@ -81,17 +82,6 @@ int main()
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
     string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
-
-    // Declear City Model
-    string Path_to_City1 = Path_to_Project + "Glitter/Glitter/Model/Building/building01.obj";
-    string Path_to_City2 = Path_to_Project + "Glitter/Glitter/Model/Building/building02.obj";
-    string Path_to_City3 = Path_to_Project + "Glitter/Glitter/Model/Building/building03.obj";
-
-
-    // load flight control and dynamics model
-    //uav UAV_fc;
-    
-    // load sound
     
     glfwInit();
     // Use OpenGL version 3.3
@@ -147,7 +137,7 @@ int main()
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        uav UAV_fc(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-1., 0., -3.));  //second glm change initial landed location of UAV
+        uav UAV_fc(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
 
         //set initial volume at first display of UAV
         float volume;
@@ -161,9 +151,8 @@ int main()
             cout << "Failed to read " << "UAV1.wav" << endl;
         }
         // City model
-        obstacle CITY1(4.0f, Path_to_City1, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        obstacle CITY2(4.0f, Path_to_City2, glm::vec3(1.0f, 3.0f, 1.0f), glm::vec3(3.0f, 0.0f, 0.0f));
-        obstacle CITY3(4.0f, Path_to_City3, glm::vec3(1.0f, 3.5f, 1.0f), glm::vec3(-3.0f, 0.0f, 0.0f));
+        const int maxID = 5;
+        Map cityMap(9, 9, maxID, Path_to_Project);
 
         //intialize point of view status
         bool firstPOV = true;
@@ -218,7 +207,7 @@ int main()
                 firstPOV = false;
 
             //distance from camera to UAV
-            float distance = 1;
+            float distance = 0.5;
             glm::vec3 cameraPosition;
             float cameraYaw, cameraPitch, cameraRoll;
 
@@ -248,83 +237,10 @@ int main()
 
 
             // draw city
-            // change scale
-            //glm::mat4 trans = glm::mat4(1.0f); 
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(0., 0., 0.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            CITY1.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(3., 0., 0.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 3.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            CITY2.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(-3., 0., 0.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 3.5f, 1.f));
-            //ourShader.setMat4("model", trans);
-            CITY3.Draw(ourShader);
+            for (auto& grid : cityMap.grids_map) {
+                grid.block->Draw(ourShader);
+            }
 
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(0., 0., 3.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
-            //ourShader.setMat4("model", trans);
-
-            // copy obstacle
-            obstacle CITY4 = CITY3;
-            CITY4.UpdatePos(glm::vec3(0.0f, 0.0f, 3.0f));
-            CITY4.UpdateScale(glm::vec3(1.f, 4.f, 1.f));
-            CITY4.Draw(ourShader);
-
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(3., 0., 3.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 5.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY1.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(-3., 0., 3.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 2.5f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY2.Draw(ourShader);
-
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(0., 0., 6.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY1.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(3., 0., 6.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 2.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY3.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(-3., 0., 6.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY2.Draw(ourShader);
-
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(-3., 0., 9.));
-            //trans = glm::scale(trans, glm::vec3(1.f, 7.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY1.Draw(ourShader);
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(1.5, 0., 9.));
-            //trans = glm::scale(trans, glm::vec3(3.f, 2.f, -1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY2.Draw(ourShader);
-
-            //trans = glm::mat4(1.0f);
-            //trans = glm::translate(trans, glm::vec3(-3., 0., 12.));
-            //trans = glm::rotate(trans, 1.5708f, glm::vec3(0., 1., 0.));
-            //trans = glm::scale(trans, glm::vec3(3.f, 2.f, 1.f));
-            //ourShader.setMat4("model", trans);
-            //CITY2.Draw(ourShader);
-
-            // Draw grid
-            // drawGrid();
-            
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
