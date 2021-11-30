@@ -52,7 +52,7 @@ private:
     {
         // read file via ASSIMP
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | /*aiProcess_FlipUVs |*/ aiProcess_CalcTangentSpace);
         // check for errors
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
@@ -221,16 +221,34 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
-        if (nrComponents == 1)
+        GLenum format = GL_RED;
+        GLenum internalformat = GL_R8;
+        std::clog << "components in texture: " << nrComponents << std::endl;
+        switch (nrComponents) {
+        case 1:
             format = GL_RED;
-        else if (nrComponents == 3)
+            internalformat = GL_R8;
+            break;
+        case 3:
             format = GL_RGB;
-        else if (nrComponents == 4)
+            internalformat = GL_SRGB8;
+            //internalformat = GL_RGB8;  // Use this format if framebuffer is not sRGB
+            break;
+        case 4:
             format = GL_RGBA;
+            internalformat = GL_SRGB8_ALPHA8;
+            //internalformat = GL_RGBA8;  // Use this format if framebuffer is not sRGB
+            break;
+        default:
+            std::clog << "Unsupported number of components: " << nrComponents << std::endl;
+        }
 
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        GLint error = glGetError();
+        if (error != 0) {
+            std::clog << "glTexImage2D returned error: " << std::hex << error << std::endl;
+        }
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
