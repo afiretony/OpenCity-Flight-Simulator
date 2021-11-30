@@ -440,6 +440,7 @@ void GameWindow(string Path_to_Project)
         glfwTerminate();
         exit(-1);
     }
+
     // tell GLFW to make the context of our window the main context on the current thread
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -503,6 +504,10 @@ void GameWindow(string Path_to_Project)
         //intialize point of view status
         bool firstPOV = true;
 
+        // camera parameters
+        float distance = 0.5;
+        glm::vec3 cameraPosition;
+        float cameraYaw, cameraPitch, cameraRoll;
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -553,10 +558,6 @@ void GameWindow(string Path_to_Project)
                 firstPOV = false;
 
             //distance from camera to UAV
-            float distance = 0.5;
-            glm::vec3 cameraPosition;
-            float cameraYaw, cameraPitch, cameraRoll;
-
             cameraPosition = UAV_fc.getUavPos();
             cameraYaw = UAV_fc.getUavTwist().y;
             cameraPitch = UAV_fc.getUavTwist().x;
@@ -577,6 +578,7 @@ void GameWindow(string Path_to_Project)
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc.getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
+                camera.Pitch = 0.f;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
                 //camera.tiltVerticalWithUAV(-cameraRoll);
             }
