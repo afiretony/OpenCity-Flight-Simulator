@@ -263,26 +263,9 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window, uav* UAV_fc)
 {
-    //int key;
-    //switch (GLFW_PRESS) {
-    //    case glfwGetKey(window, GLFW_KEY_ESCAPE):
-    //        glfwSetWindowShouldClose(window, true);
-    //        break;
-    //}
-        
-
-
-
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    //else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(FORWARD, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(BACKWARD, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(LEFT, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(RIGHT, deltaTime);
+
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         UAV_fc->forward();
         
@@ -320,8 +303,6 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     UAV_fc->dynamics();
 }
 
-    
-}
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
