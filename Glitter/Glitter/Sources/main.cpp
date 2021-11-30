@@ -498,8 +498,8 @@ void GameWindow(string Path_to_Project)
         }
 
         // City model
-        const int maxID = 5;
-        Map cityMap(9, 9, maxID, Path_to_Project);
+        const int maxID = 10;
+        Map cityMap(14, 14, maxID, Path_to_Project);
 
         //intialize point of view status
         bool firstPOV = true;
