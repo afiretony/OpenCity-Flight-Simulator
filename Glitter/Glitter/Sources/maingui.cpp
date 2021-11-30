@@ -29,6 +29,9 @@
 #include "imgui_internal.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_opengl3_loader.h"
+#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
+
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -36,15 +39,9 @@ static void glfw_error_callback(int error, const char* description)
 }
 
 //#include "yssimplesound.h"
-#define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
-
 using namespace std;
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window, uav* UAV_fc);
-void drawGrid();
+bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
+void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture);
 
 // settings
 const unsigned int SCR_WIDTH = 1600;
@@ -70,6 +67,7 @@ string getCurrentDir() {
 }
 int main(int, char**)
 {
+
     string Path_to_Project = getCurrentDir();
     cout << "Current working directory : " << Path_to_Project << endl;
     // when compiling using visual studio, current directory is usually .../[Path to your project]/Glitter/Build/Debug
@@ -83,34 +81,13 @@ int main(int, char**)
     cout << "Path to Project is: " << Path_to_Project << endl;
     std::replace(Path_to_Project.begin(), Path_to_Project.end(), '\\', '/');
 
-    string Path_to_Shader1 = Path_to_Project + "Glitter/Glitter/Shaders/modelvs.vs";
-    const char* path1 = Path_to_Shader1.c_str(); // convert string to char, because Shader class input has to be char
-    string Path_to_Shader2 = Path_to_Project + "Glitter/Glitter/Shaders/modelfs.fs";
-    const char* path2 = Path_to_Shader2.c_str();
-
-
-    // load city and uav model
-    // Declear UAV Model
-    string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV/quadcop.obj";
-    string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
-    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
-
-    // Declear City Model
-    string Path_to_City1 = Path_to_Project + "Glitter/Glitter/Model/Building/building01.obj";
-    string Path_to_City2 = Path_to_Project + "Glitter/Glitter/Model/Building/building02.obj";
-    string Path_to_City3 = Path_to_Project + "Glitter/Glitter/Model/Building/building03.obj";
-
-    //setup sound
-    YsSoundPlayer player1;
-    YsSoundPlayer::SoundData myWav1;
-
-    // store the filename of music
-    string fileNames[] = { Path_to_Sound1, Path_to_Sound2 };
 
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
+    if (!glfwInit()) 
         return 1;
+
+
 
     // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -136,7 +113,8 @@ int main(int, char**)
 #endif
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    // GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
     if (window == NULL)
         return 1;
     glfwMakeContextCurrent(window);
@@ -145,14 +123,8 @@ int main(int, char**)
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    //ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+
 
     //// tell GLFW to capture our mouse
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -177,56 +149,92 @@ int main(int, char**)
     ImGui::StyleColorsClassic();
     // ImGui::StyleColorsLight();
 
-    // Setup Platform/Renderer backends
-    Shader ourShader(path1, path2);
-    cout << "shader loaded" << endl;
-
-    // load flight control and dynamics model
-    // SimObject init: file path, scalar, position
-    uav UAV_fc(Path_to_Model, glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0., 8., 0.));
-
-    float volume;
-
-    if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
-        player1.Start();
-        player1.SetVolume(myWav1, 0.5);
-        player1.PlayBackground(myWav1);
-    }
-    else {
-        cout << "Failed to read " << "UAV1.wav" << endl;
-    }
-    // City model
-    obstacle CITY1(4.0f, Path_to_City1, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    obstacle CITY2(4.0f, Path_to_City2, glm::vec3(1.0f, 3.0f, 1.0f), glm::vec3(3.0f, 0.0f, 0.0f));
-    obstacle CITY3(4.0f, Path_to_City3, glm::vec3(1.0f, 3.5f, 1.0f), glm::vec3(-3.0f, 0.0f, 0.0f));
-
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
 
     // Our state
     bool show_demo_window = false;
     bool show_another_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    /****** Load Images for the start-up menu ***************/
+    //Load our texture for background
+    int my_image_width = 0;
+    int my_image_height = 0;
+    GLuint bg_img_texture = 0;
+    GLuint title_img_texture = 0;
+    GLuint start_btn_img_texture = 0;
+
+    bool ret = LoadTextureFromFile((Path_to_Project + string("/figures/city_nobg.png")).c_str(), &bg_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/start_interface-removebg.png")).c_str(), &title_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/start_button_nobg.png")).c_str(), &start_btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+
+
+    bool show_dropdown_menu = false;
+
+
+    // Main loop
+    StartInterface(window, clear_color, bg_img_texture, title_img_texture, start_btn_img_texture);
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
+}
+
+
+// Simple helper function to load an image into a OpenGL texture with common settings
+bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
+{
+    // Load from file
+    int image_width = 0;
+    int image_height = 0;
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == NULL)
+        return false;
+
+    // Create a OpenGL texture identifier
+    GLuint image_texture;
+    glGenTextures(1, &image_texture);
+    //int tmp = GL_TEXTURE_2D;
+    glBindTexture(GL_TEXTURE_2D, image_texture);
+
+    // Setup filtering parameters for display
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
+
+    // Upload pixels into texture
+#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    stbi_image_free(image_data);
+
+    *out_texture = image_texture;
+    *out_width = image_width;
+    *out_height = image_height;
+
+    return true;
+}
+
+
+void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture) {
 
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+
+
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -239,122 +247,130 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            ImVec2 pos(100, 100);
-            ImVec2 size(600, 500);
-            bool Ankit = true; // Control if we need a dumy bool
-
-            ImGui::Begin("Model Menu", &Ankit, ImGuiWindowFlags_NoTitleBar);                          // Create a window called "HModel Menu" and model should be loaded into it.
-
-            ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-            ImGui::SetWindowPos(pos);
-            ImGui::SetWindowSize(size);
-            // processInput(window, &UAV_fc);
-
-            // render
-            // ------
-            //glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-            // glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-            // enable shader before setting uniforms
-            ourShader.use();
-
-            // camera/view transformation
-            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-            glm::mat4 view = camera.GetViewMatrix();
-
-            // view/projection transformations
-            ourShader.setMat4("projection", projection);
-            ourShader.setMat4("view", view);
-
-
-
-            // draw UAV (physical update is integrated in class)
-            UAV_fc.Draw(ourShader);
-
-
-            // draw city
-            CITY1.Draw(ourShader);
-
-            CITY2.Draw(ourShader);
-
-            CITY3.Draw(ourShader);
-
-            // copy obstacle
-            obstacle CITY4 = CITY3;
-            CITY4.UpdatePos(glm::vec3(0.0f, 0.0f, 3.0f));
-            CITY4.UpdateScale(glm::vec3(1.f, 4.f, 1.f));
-            CITY4.Draw(ourShader);
-            ImGui::End();
-        }
-        // manu
-        {
-            ImVec2 pos(0, 0);
-            ImVec2 size(200, 100);
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-            ImGui::SetWindowPos(pos);
-            ImGui::SetWindowSize(size);
-            ImGui::End();
-        }
-         // 3. Show another simple window.
-        //if (show_another_window)
+        // start button window
         //{
-        //    ImGui::Begin("Another Window");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        //    ImGui::Text("Hello from another window!");
-        //    if (ImGui::Button("Close Me"))
-        //        show_another_window = false;
+        //    ImVec2 pos_offset(SCR_WIDTH / 2, SCR_HEIGHT * 0.75); // center location of the window
+        //    ImVec2 button_size(200, 100);  // size of the window
+        //    ImVec2 button_pos(pos_offset.x - size.x / 2, pos_offset.y - size.y / 2); // top-left cornor of the win
+
+        //    ImGui::SetNextWindowPos(pos);
+        //    ImGui::SetNextWindowSize(size);
+        //    ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        //    ImGui::ImageButton((void*)(intptr_t)start_btn_img_texture, size);
         //    ImGui::End();
         //}
-        ////////////////////////////////////
-        if (UAV_fc.GetNormVel() > 0)
-            volume = UAV_fc.GetNormVel() / 2 + 0.5;
-        else
-            volume = 0.5;
-        //cout << UAV_fc.GetNormVel() << endl;
-        player1.SetVolume(myWav1, volume);
-        // per-frame time logic
-        // --------------------
+           // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        // if (true)
+        //     ImGui::ShowDemoWindow(&show_demo_window);
+        // title window
+        {
+            static int counter = 0;
 
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        UAV_fc.getdeltatime(deltaTime);
-        // cout << currentFrame << endl;
+            ImVec2 pos_offset(SCR_WIDTH / 2, SCR_HEIGHT / 2); // center location of the window
+            ImVec2 size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.8);  // size of the window
+            ImVec2 pos(pos_offset.x - size.x / 2, pos_offset.y - size.y / 2);
 
-        // input
-        // -----
-        
+            ImVec2 titleImgSize(size.x, size.y * 0.8);
+            ImVec2 btnSize(size.x * 0.2, size.y * 0.2);
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        //glfwSwapBuffers(window);
-        //glfwPollEvents();
-        ////////////////////////////////////
+            ImGui::SetNextWindowPos(pos);
+            ImGui::SetNextWindowSize(size);
+            ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
+            ImGui::Image((void*)(intptr_t)title_img_texture, titleImgSize);
+            ImGui::SetCursorPosX(pos_offset.x - btnSize.x);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - btnSize.y);
+            if (ImGui::ImageButton((ImTextureID)start_btn_img_texture, btnSize)) {
+                cout << "I Love 24780 soooooo much!!!! Let's Play the game!";
+                // counter ++;
+                break;
+                //show_dropdown_menu ^= true;
+            }
+            //if(show_dropdown_menu){
+            //// if (counter % 5 == 0)
+            //    if (ImGui::Button("I")){
+            //        cout<<"I"<<endl;
+            //    }
+            //    ImGui::SameLine();
+            //    if (ImGui::Button("Love")){
+            //        cout<<"Love\n";
+            //    }
+            //    ImGui::SameLine();
+            //    if (ImGui::Button("24")){
+            //        cout<<"24\n";
+            //    }
+            //    ImGui::SameLine();
+            //    if (ImGui::Button("780")){
+            //        cout<<"780\n";
+            //    }
+            //}
+            ImGui::End();
+        }
+
+        //Try to load the image into ImGui
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+        ImGui::Begin("OpenGL Texture Text", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
+        ImGui::Image((void*)(intptr_t)bg_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
+        ImGui::End();
+
+
+
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        // if (show_demo_window)
+              //ImGui::ShowDemoWindow(&show_demo_window);
+
+        //// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        //{
+        //   ImVec2 pos(100, 100);
+        //   ImVec2 size(600, 500);
+        //   bool Ankit = true; // Control if we need a dumy bool
+
+        //   ImGui::Begin("Model Menu", &Ankit, ImGuiWindowFlags_NoTitleBar);                          // Create a window called "HModel Menu" and model should be loaded into it.
+
+        //   ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+        //   ImGui::SetWindowPos(pos);
+        //   ImGui::SetWindowSize(size);
+        //   ImGui::End();
+        //}
+        // menu
+        //{
+        //    imvec2 pos(600, 0);
+        //    //imvec2 size(200, 100);
+        //    static float f = 0.0f;
+        //    static int counter = 0;
+
+        //    imgui::begin("hello, world!");                          // create a window called "hello, world!" and append into it.
+
+        //    imgui::text("this is some useful text.");               // display some text (you can use a format strings too)
+        //    imgui::checkbox("demo window", &show_demo_window);      // edit bools storing our window open/close state
+        //    imgui::checkbox("another window", &show_another_window);
+
+        //    imgui::sliderfloat("float", &f, 0.0f, 1.0f);            // edit 1 float using a slider from 0.0f to 1.0f
+        //    imgui::coloredit3("clear color", (float*)&clear_color); // edit 3 floats representing a color
+
+        //    if (imgui::button("button"))                            // buttons return true when clicked (most widgets return true when edited/activated)
+        //        counter++;
+        //    imgui::sameline();
+        //    imgui::text("counter = %d", counter);
+
+        //    imgui::text("application average %.3f ms/frame (%.1f fps)", 1000.0f / imgui::getio().framerate, imgui::getio().framerate);
+        //    imguiwindow* window = imgui::getcurrentwindow();
+
+        //    imgui::setwindowpos(pos);
+        //    //imgui::setwindowsize(size);
+        //    imgui::end();
+        //}
+        //  // 3. show another simple window.
+        // if (show_another_window)
+        // {
+        //     imgui::begin("another window");   // pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        //     imgui::text("hello from another window!");
+        //     if (imgui::button("close me"))
+        //         show_another_window = false;
+        //     imgui::end();
+        // }
+
 
         // Rendering
         ImGui::Render();
@@ -369,82 +385,4 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
-
-    return 0;
-}
-
-void processInput(GLFWwindow* window, uav* UAV_fc)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        UAV_fc->forward();
-    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        UAV_fc->backward();
-    else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        UAV_fc->left();
-    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        UAV_fc->right();
-    else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        UAV_fc->up();
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        UAV_fc->down();
-    else if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS)
-        UAV_fc->yawright();
-    else if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS)
-        UAV_fc->yawleft();
-    else
-        UAV_fc->hold();
-    UAV_fc->dynamics();
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-}
-
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.ProcessMouseScroll(yoffset);
 }
