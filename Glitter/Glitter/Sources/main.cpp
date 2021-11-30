@@ -30,8 +30,8 @@ void processInput(GLFWwindow* window, uav* UAV_fc);
 void drawGrid();
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 1000;
+const unsigned int SCR_WIDTH = 1024;
+const unsigned int SCR_HEIGHT = 768;
 
 // camera
 Camera camera(glm::vec3(0.f, 10.f, 10.f));
