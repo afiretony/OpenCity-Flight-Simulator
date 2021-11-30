@@ -1,5 +1,6 @@
 #pragma once
 #include "SimObject.h"
+#include "flightcontrol.h"
 
 
 class obstacle : public SimObject{
@@ -14,9 +15,9 @@ public:
 //class detector {
 //private:
 //	float tolerance;
-//	uav currUAV;
+//	uav myUAV;
 //	// Map for all obstacles inside the tolerance range
-//	std::vector<obstacle*> obstacleMap;
+//	Map myCity;
 //	glm::vec3 getForwardDir(obstacle* obst, uav* craft);
 //	
 //public:

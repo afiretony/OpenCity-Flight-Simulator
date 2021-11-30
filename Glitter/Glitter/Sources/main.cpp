@@ -265,41 +265,59 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    //else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(FORWARD, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(BACKWARD, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(LEFT, deltaTime);
-    //else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //    camera.ProcessKeyboard(RIGHT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        UAV_fc->forward();
+    else {
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            UAV_fc->forward();
+            UAV_fc->dynamics();
+        }
+            
+
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            UAV_fc->backward();
+            UAV_fc->dynamics();
+        }
         
-    else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        UAV_fc->backward();
-         
-    else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        UAV_fc->left();
-        
-    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        UAV_fc->right();
-        
-    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        UAV_fc->up();
-        
-    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        UAV_fc->down();
-        
-    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        UAV_fc->yawleft();
-        
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        UAV_fc->yawright();
-        
-    else
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            UAV_fc->left();
+            UAV_fc->dynamics();
+        }
+
+
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            UAV_fc->right();
+            UAV_fc->dynamics();
+        }
+
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            UAV_fc->up();
+            UAV_fc->dynamics();
+        }
+
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            UAV_fc->down();
+            UAV_fc->dynamics();
+        }
+
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            UAV_fc->yawleft();
+            UAV_fc->dynamics();
+        }
+
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            UAV_fc->yawright();
+            UAV_fc->dynamics();
+        }
+
         UAV_fc->hold();
-    UAV_fc->dynamics();
+        UAV_fc->dynamics();
+    }
+
+    
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
