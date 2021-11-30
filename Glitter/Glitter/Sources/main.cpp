@@ -243,8 +243,8 @@ int main()
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc.getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
-                camera.tiltHorizontalWithUAV(cameraPitch);
-                camera.tiltVerticalWithUAV(-cameraRoll);
+                //camera.tiltHorizontalWithUAV(cameraPitch);
+                //camera.tiltVerticalWithUAV(-cameraRoll);
             }
 
 
@@ -358,22 +358,30 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     //    camera.ProcessKeyboard(LEFT, deltaTime);
     //else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     //    camera.ProcessKeyboard(RIGHT, deltaTime);
-    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
-        UAV_fc->forward();    
+    else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        UAV_fc->forward();
+        
     else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        UAV_fc->backward();    
+        UAV_fc->backward();
+         
     else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         UAV_fc->left();
+        
     else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         UAV_fc->right();
+        
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         UAV_fc->up();
+        
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         UAV_fc->down();
+        
     else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         UAV_fc->yawleft();
+        
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         UAV_fc->yawright();
+        
     else
         UAV_fc->hold();
     UAV_fc->dynamics();
