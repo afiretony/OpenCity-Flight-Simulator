@@ -57,7 +57,7 @@
 //    // glfw: initialize and configure
 //    // ------------------------------
 //    // load user interface
-//    
+//
 //    string Path_to_Project = getCurrentDir();
 //    cout << "Current working directory : " << Path_to_Project << endl;
 //    // when compiling using visual studio, current directory is usually .../[Path to your project]/Glitter/Build/Debug
@@ -76,13 +76,13 @@
 //    string Path_to_Shader2 = Path_to_Project + "Glitter/Glitter/Shaders/modelfs.fs";
 //    const char* path2 = Path_to_Shader2.c_str();
 //
-//    
+//
 //    // load city and uav model
 //    // Declear UAV Model
 //    string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
 //    string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
 //    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
-//    
+//
 //    glfwInit();
 //    // Use OpenGL version 3.3
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -131,7 +131,7 @@
 //    if (true) {
 //        // build and compile shaders
 //        // -------------------------
-//        
+//
 //        Shader ourShader(path1, path2);
 //        cout << "shader loaded" << endl;
 //
@@ -171,7 +171,7 @@
 //            player1.SetVolume(myWav1, volume);
 //            // per-frame time logic
 //            // --------------------
-//            
+//
 //            float currentFrame = glfwGetTime();
 //            deltaTime = currentFrame - lastFrame;
 //            lastFrame = currentFrame;
@@ -187,14 +187,14 @@
 //            //glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
 //            glClearColor(0.8f, 0.5f, 0.f, 1.0f);
 //            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-//            
+//
 //            // enable shader before setting uniforms
 //            ourShader.use();
 //
 //            // camera/view transformation
 //            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 //            glm::mat4 view = camera.GetViewMatrix();
-//            
+//
 //            // view/projection transformations
 //            ourShader.setMat4("projection", projection);
 //            ourShader.setMat4("view", view);
@@ -250,8 +250,8 @@
 //        }
 //    }
 //
-//    
-//    
+//
+//
 //
 //    // glfw: terminate, clearing all previously allocated GLFW resources.
 //    // ------------------------------------------------------------------
@@ -269,7 +269,7 @@
 //    //        glfwSetWindowShouldClose(window, true);
 //    //        break;
 //    //}
-//        
+//
 //
 //
 //
@@ -285,31 +285,31 @@
 //    //    camera.ProcessKeyboard(RIGHT, deltaTime);
 //    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 //        UAV_fc->forward();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 //        UAV_fc->backward();
-//         
+//
 //    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 //        UAV_fc->left();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 //        UAV_fc->right();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 //        UAV_fc->up();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 //        UAV_fc->down();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 //        UAV_fc->yawleft();
-//        
+//
 //    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 //        UAV_fc->yawright();
-//        
-//    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS 
-//        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS 
-//        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS 
+//
+//    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS
+//        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS
+//        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS
 //        && glfwGetKey(window, GLFW_KEY_RIGHT) != GLFW_PRESS
 //        && glfwGetKey(window, GLFW_KEY_W) != GLFW_PRESS
 //        && glfwGetKey(window, GLFW_KEY_S) != GLFW_PRESS
@@ -557,7 +557,7 @@ int main()
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            glm::mat4 trans = glm::mat4(1.0f); 
+            glm::mat4 trans = glm::mat4(1.0f);
             trans = glm::mat4(1.0f);
             trans = glm::translate(trans, glm::vec3(0., 0., 0.));
             trans = glm::scale(trans, glm::vec3(1.f, 4.f, 1.f));
