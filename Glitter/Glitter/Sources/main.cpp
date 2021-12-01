@@ -507,9 +507,10 @@ void GameWindow(string Path_to_Project)
     string Path_to_Model3 = Path_to_Project + "Glitter/Glitter/Model/UAV2/tie_UV.obj";
     string Path_to_Model4 = Path_to_Project + "Glitter/Glitter/Model/Gloden_snitch/Golden_Snitch.obj";
 
-
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
-    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
+    string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/Kylo.wav";
+    string Path_to_Sound3 = Path_to_Project + "Glitter/Glitter/Sounds/tie.wav";
+    string Path_to_Sound4 = Path_to_Project + "Glitter/Glitter/Sounds/golden.wav";
 
     glfwInit();
     // Use OpenGL version 3.3
@@ -558,7 +559,7 @@ void GameWindow(string Path_to_Project)
     YsSoundPlayer::SoundData myWav1;
 
     // store the filename of music
-    string fileNames[] = { Path_to_Sound1, Path_to_Sound2 };
+    string fileNames[] = { Path_to_Sound1, Path_to_Sound2, Path_to_Sound3, Path_to_Sound4 };
 
     if (true) {
         // build and compile shaders
@@ -569,19 +570,23 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        string Path_to_Model;
+        string Path_to_Model, Path_to_Sound;
         switch (model_selection) {
         case 1:
             Path_to_Model = Path_to_Model1;
+            Path_to_Sound = Path_to_Sound1;
             break;
         case 2:
             Path_to_Model = Path_to_Model2;
+            Path_to_Sound = Path_to_Sound2;
             break;
         case 3:
             Path_to_Model = Path_to_Model3;
+            Path_to_Sound = Path_to_Sound3;
             break;
         case 4:
             Path_to_Model = Path_to_Model4;
+            Path_to_Sound = Path_to_Sound4;
             break;
         }
         auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
@@ -659,7 +664,7 @@ void GameWindow(string Path_to_Project)
         //set initial volume at first display of UAV
         float volume;
         // load user choice, note use of .c_str()
-        if (YSOK == myWav1.LoadWav(fileNames[1].c_str())) {
+        if (YSOK == myWav1.LoadWav(Path_to_Sound.c_str())) {
             player1.Start();
             player1.SetVolume(myWav1, 0.5);
             player1.PlayBackground(myWav1);
