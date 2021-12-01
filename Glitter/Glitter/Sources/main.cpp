@@ -424,6 +424,19 @@ void GameWindow(string Path_to_Project)
     const char* path3 = Path_to_Shader3.c_str(); // convert string to char, because Shader class input has to be char
     string Path_to_Shader4 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxfs.fs";
     const char* path4 = Path_to_Shader4.c_str();
+
+    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg";
+    const char* skypath1 = Path_to_skybox_right.c_str();
+    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg";
+    const char* skypath2 = Path_to_skybox_left.c_str();
+    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg";
+    const char* skypath3 = Path_to_skybox_top.c_str();
+    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg";
+    const char* skypath4 = Path_to_skybox_bottom.c_str();
+    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg";
+    const char* skypath5 = Path_to_skybox_front.c_str();
+    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg";
+    const char* skypath6 = Path_to_skybox_back.c_str();
     //------------------------------skybox------------------------------
 
 
@@ -553,16 +566,7 @@ void GameWindow(string Path_to_Project)
 
         string test = getCurrentDir();
 
-        vector<std::string> faces
-        {
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg",
-                Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg"
-        };
+        vector<std::string> faces{skypath1, skypath2, skypath3, skypath4, skypath5, skypath6};
         unsigned int cubemapTexture = loadCubemap(faces);
 
         skyboxShader.use();
