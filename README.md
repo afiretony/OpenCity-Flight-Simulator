@@ -1,4 +1,4 @@
-![](https://github.com/afiretony/24780-Engineers-Republic/blob/main/team_logo.png =100x100)
+![](https://raw.githubusercontent.com/afiretony/24780-Engineers-Republic/main/team_logo.png =100x100)
 # OpenCity Flight Simulator
 Carnegie Mellon University - 24780B Engineering Computation - 21fall
 
