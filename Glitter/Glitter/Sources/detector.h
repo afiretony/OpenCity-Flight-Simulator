@@ -6,7 +6,7 @@
 
 class detector {
 private:
-	const float tolerance = 0.08;
+	const float tolerance = 3;
 
 	uav* myUAV;
 	Map* myCity;
@@ -35,22 +35,53 @@ inline void detector::uav_control()
 	if (!isAbove()) {
 		myUAV->setCoulombF(getRepulse());
 	}
+	else {
+		myUAV->setCoulombF(glm::vec3(0.0f));
+	}
 }
 
 inline bool detector::isAbove()
 {
-	bool aboveFlag = true;
-	auto neighbour = myCity->getNeighbour(myUAV->getUavPos());
+	bool aboveFlag = true;	
 	float uav_height = myUAV->getUavPos().y;
-	for (auto& block : neighbour) {
-		aboveFlag = aboveFlag && (block.block_height <= uav_height);
+	auto neighbour = myCity->getNeighbour(myUAV->getUavPos());
+	for (auto& grid : neighbour) {
+		aboveFlag = aboveFlag && (grid.block.block_height <= uav_height);
 	}
+	//std::cout << "aboveFlag: " << aboveFlag << std::endl;
 	return aboveFlag;
 }
 
 inline glm::vec3 detector::getRepulse()
 {
-	return glm::vec3(0.0f);
+	glm::vec3 force = glm::vec3(0.0f);
+	auto neighbour = myCity->getNeighbour(myUAV->getUavPos());
+	auto nearest = neighbour.at(0).block;
+	float scale = myCity->scale;
+	float len = myCity->grid_len * scale;
+	glm::vec2 obstacle_pos = glm::vec2(scale * nearest.coord.x, scale * nearest.coord.z);
+	glm::vec2 uav_pos = glm::vec2(myUAV->getUavPos().x, myUAV->getUavPos().z);
+	float h_dist = glm::length(obstacle_pos - uav_pos);
+	std::cout << "h_dist-len: " << h_dist - len << std::endl;
+	if ((h_dist - len) <= tolerance) {
+		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos); 
+		float mag = 500.0f / (h_dist * h_dist);
+		//float mag = 10.0f;
+		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
+		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
+	}
+	else if ((h_dist - len) <= 0)
+	{
+		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos);
+		//float mag = 100.0f / (h_dist * h_dist);
+		float mag = 1000.0f;
+		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
+		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
+	}
+	else{
+		force = glm::vec3(0.0f);
+	}
+	return force;
 }
 
 #endif // DETECTOR_H

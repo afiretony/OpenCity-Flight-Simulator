@@ -419,7 +419,7 @@ void GameWindow(string Path_to_Project)
     const char* path2 = Path_to_Shader2.c_str();
 
 
-    // load city and uav model
+    // load uav model
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
@@ -499,11 +499,11 @@ void GameWindow(string Path_to_Project)
         }
 
         // City model
-        const int maxID = 10;
+        const int maxID = 2;
         auto cityMap = new Map(14, 14, maxID, Path_to_Project);
 
         // Obstacle detector
-        detector avoid(UAV_fc, cityMap);
+        detector avoidControl(UAV_fc, cityMap);
 
         //intialize point of view status
         bool firstPOV = true;
@@ -539,7 +539,7 @@ void GameWindow(string Path_to_Project)
 
             // obstacle avoid
             // -----
-
+            avoidControl.uav_control();
 
             // render
             // ------
