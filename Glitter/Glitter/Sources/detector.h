@@ -74,7 +74,7 @@ inline glm::vec3 detector::getRepulse()
 		float mag = 800.0f / (h_dist * h_dist);
 		//float mag = 10.0f;
 		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
-		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
+		//std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
 	}
 	//else if ((h_dist - len) <= 0)
 	//{
