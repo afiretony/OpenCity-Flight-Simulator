@@ -66,6 +66,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+// model selection
+int model_selection = 0;
+
 string getCurrentDir() {
     char buff[MAX_PATH];
     GetModuleFileName(NULL, buff, MAX_PATH);
@@ -191,7 +194,6 @@ void StartInterface(const char* glsl_version, string Path_to_Project)
 
     // Our state
     int page = 0;
-    int model_selection = 0;
     bool show_demo_window = false;
     bool show_another_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -500,11 +502,11 @@ void GameWindow(string Path_to_Project)
 
     // load uav model
     // Declear UAV Model
-
     string Path_to_Model1 = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Model2 = Path_to_Project + "Glitter/Glitter/Model/UAV2/warship.obj";
-    string Path_to_Model3 = Path_to_Project + "Glitter/Glitter/Model/Gloden_snitch/Golden_Snitch.obj";
-    string Path_to_Model4 = Path_to_Project + "Glitter/Glitter/Model/UAV2/tie_UV.obj";
+    string Path_to_Model3 = Path_to_Project + "Glitter/Glitter/Model/UAV2/tie_UV.obj";
+    string Path_to_Model4 = Path_to_Project + "Glitter/Glitter/Model/Gloden_snitch/Golden_Snitch.obj";
+
 
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
     string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
@@ -567,7 +569,22 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        auto UAV_fc = new uav(Path_to_Model4, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
+        string Path_to_Model;
+        switch (model_selection) {
+        case 1:
+            Path_to_Model = Path_to_Model1;
+            break;
+        case 2:
+            Path_to_Model = Path_to_Model2;
+            break;
+        case 3:
+            Path_to_Model = Path_to_Model3;
+            break;
+        case 4:
+            Path_to_Model = Path_to_Model4;
+            break;
+        }
+        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
 
         //------------------------------skybox------------------------------
         Shader skyboxShader(path3, path4);
