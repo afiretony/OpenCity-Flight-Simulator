@@ -100,7 +100,7 @@ public:
         xoffset *= MouseSensitivity;
         yoffset *= MouseSensitivity;
 
-        //Yaw += xoffset;
+        Yaw += xoffset;
         Pitch += yoffset;
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
@@ -133,12 +133,12 @@ public:
     }
 
     void tiltHorizontalWithUAV(float rad) {
-        Pitch = rad * 57.2958;
+        Pitch = rad * 180.0 / PI_1;
         updateCameraVectors();
     }
 
     void rotateWithUAV(float rad) {
-        Yaw = rad * 57.2958;
+        Yaw = rad *  180.0 / PI_1;
         updateCameraVectors();
     }
 

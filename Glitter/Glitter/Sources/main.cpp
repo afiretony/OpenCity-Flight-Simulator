@@ -44,11 +44,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, uav* UAV_fc);
 void GameWindow(string Path_to_Project);
-
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture);
-
 void GuiWindow(const char* glsl_version, string Path_to_Project);
+unsigned int loadCubemap(vector<std::string> faces);
+
 // settings
 unsigned int SCR_WIDTH = 1024;
 unsigned int SCR_HEIGHT = 768;
@@ -136,15 +136,16 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primary);
 
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "My Title", primary, NULL);
-
-    glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
-    
     SCR_WIDTH = mode->width;
     SCR_HEIGHT = mode->height;
-    //GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    // real full screen, but not good for Zoom share screen
+    // glfwSetWindowMonitor(window, primary, 0, 0, SCR_WIDTH, SCR_HEIGHT, mode->refreshRate);
+    
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Start GUI", NULL, NULL);
+
     if (window == NULL)
         exit(-1);
+    
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
@@ -418,6 +419,26 @@ void GameWindow(string Path_to_Project)
     string Path_to_Shader2 = Path_to_Project + "Glitter/Glitter/Shaders/modelfs.fs";
     const char* path2 = Path_to_Shader2.c_str();
 
+    //------------------------------skybox------------------------------
+    string Path_to_Shader3 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxvs.vs";
+    const char* path3 = Path_to_Shader3.c_str(); // convert string to char, because Shader class input has to be char
+    string Path_to_Shader4 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxfs.fs";
+    const char* path4 = Path_to_Shader4.c_str();
+
+    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg";
+    const char* skypath1 = Path_to_skybox_right.c_str();
+    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg";
+    const char* skypath2 = Path_to_skybox_left.c_str();
+    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg";
+    const char* skypath3 = Path_to_skybox_top.c_str();
+    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg";
+    const char* skypath4 = Path_to_skybox_bottom.c_str();
+    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg";
+    const char* skypath5 = Path_to_skybox_front.c_str();
+    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg";
+    const char* skypath6 = Path_to_skybox_back.c_str();
+    //------------------------------skybox------------------------------
+
 
     // load uav model
     // Declear UAV Model
@@ -431,7 +452,7 @@ void GameWindow(string Path_to_Project)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);  // Enables sRGB framebuffer capability
-
+    
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Engineering Republic", NULL, NULL);
@@ -445,7 +466,7 @@ void GameWindow(string Path_to_Project)
     // tell GLFW to make the context of our window the main context on the current thread
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
+    
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
@@ -460,7 +481,7 @@ void GameWindow(string Path_to_Project)
     }
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
     // -----------------------------
@@ -485,6 +506,75 @@ void GameWindow(string Path_to_Project)
         // SimObject init: file path, scalar, position
         auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
 
+        //------------------------------skybox------------------------------
+        Shader skyboxShader(path3, path4);
+
+        float skyboxVertices[] = {
+            // positions          
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f
+        };
+
+        // skybox VAO
+        unsigned int skyboxVAO, skyboxVBO;
+        glGenVertexArrays(1, &skyboxVAO);
+        glGenBuffers(1, &skyboxVBO);
+        glBindVertexArray(skyboxVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        string test = getCurrentDir();
+
+        vector<std::string> faces{skypath1, skypath2, skypath3, skypath4, skypath5, skypath6};
+        unsigned int cubemapTexture = loadCubemap(faces);
+
+        skyboxShader.use();
+        skyboxShader.setInt("skybox", 0);
+
+        //------------------------------skybox------------------------------
+
+
         // initialize UAV sound effects
         //set initial volume at first display of UAV
         float volume;
@@ -507,6 +597,8 @@ void GameWindow(string Path_to_Project)
 
         //intialize point of view status
         bool firstPOV = true;
+        bool thirdPOV = true;
+        bool freePOV = true;
 
         // camera parameters
         float distance = 0.5;
@@ -514,6 +606,9 @@ void GameWindow(string Path_to_Project)
         float cameraYaw, cameraPitch, cameraRoll;
         // render loop
         // -----------
+        int last_frame = 0;
+        int current_frame = 0;
+
         while (!glfwWindowShouldClose(window))
         {
 
@@ -560,10 +655,23 @@ void GameWindow(string Path_to_Project)
 
 
             // specificy Z and X key to switch between first and third POV
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
                 firstPOV = true;
+                thirdPOV = false;
+                freePOV = false;
+            }
             else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+            {
+                thirdPOV = true;
                 firstPOV = false;
+                freePOV = false;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+                thirdPOV = false;
+                firstPOV = false;
+                freePOV = true;
+                camera.Pitch = 0.f;
+            }
 
             //distance from camera to UAV
             cameraPosition = UAV_fc->getUavPos();
@@ -571,31 +679,74 @@ void GameWindow(string Path_to_Project)
             cameraPitch = UAV_fc->getUavTwist().x;
             cameraRoll = UAV_fc->getUavTwist().z;
 
-            if (firstPOV == false) {
-                // draw UAV (physical update is integrated in class)
-                UAV_fc->Draw(ourShader);
+            last_frame = currentFrame;
 
+            if (thirdPOV) {
+                // draw UAV (physical update is integrated in class)
+                
                 camera.Position.x = cameraPosition.x - distance * cosf(cameraYaw);//cos
                 camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
                 camera.Position.z = cameraPosition.z + distance * sinf(cameraYaw); //sin
                 camera.rotateWithUAV(-cameraYaw);
-                camera.Pitch = -45.f;
+                camera.Pitch = -30.f;
+                currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch - 45.f);
+               
             }
-            else {
+            else if(firstPOV) {
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc->getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
                 camera.Pitch = 0.f;
+                currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
                 //camera.tiltVerticalWithUAV(-cameraRoll);
             }
+            else if (freePOV) {
+                glfwSetCursorPosCallback(window, mouse_callback);
+                camera.Position = UAV_fc->getUavPos();
+                camera.Position.y -= 0.15;
+                currentFrame++;
+            }
+            while (last_frame == currentFrame);
+
+            // use shader again to project using updated camera position 
+               // enable shader before setting uniforms
+            ourShader.use();
+
+            // camera/view transformation
+            projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            view = camera.GetViewMatrix();
+
+            // view/projection transformations
+            ourShader.setMat4("projection", projection);
+            ourShader.setMat4("view", view);
+
+            if(!firstPOV)
+                UAV_fc->Draw(ourShader);
 
 
             // draw city
             for (auto& grid : cityMap->grids_map) {
                 grid.block->Draw(ourShader);
             }
+
+            //------------------------------skybox------------------------------
+            // draw skybox as last
+            glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+            skyboxShader.use();
+            view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+            skyboxShader.setMat4("view", view);
+            skyboxShader.setMat4("projection", projection);
+            // skybox cube
+            glBindVertexArray(skyboxVAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+            glDepthFunc(GL_LESS); // set depth function back to default
+            //------------------------------skybox------------------------------
+
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -638,11 +789,9 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
         UAV_fc->right();
     }
         
-        
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         UAV_fc->up();
     }
-        
         
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         UAV_fc->down();
@@ -657,21 +806,16 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         UAV_fc->yawright();
     }
-
-    UAV_fc->dynamics();
         
-    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS
+    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS 
+        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS 
+        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS 
         && glfwGetKey(window, GLFW_KEY_RIGHT) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_W) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_S) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_A) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_D) != GLFW_PRESS) {
+        && glfwGetKey(window, GLFW_KEY_D) != GLFW_PRESS)
         UAV_fc->hold();
-        UAV_fc->dynamics();
-    }
-        
 
     //if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     //    UAV_fc->hold();
@@ -685,7 +829,7 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     //if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     //    UAV_fc->hold();
 
-    
+    UAV_fc->dynamics();
 }
 
 
@@ -723,4 +867,36 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+unsigned int loadCubemap(vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    stbi_set_flip_vertically_on_load(false);
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
