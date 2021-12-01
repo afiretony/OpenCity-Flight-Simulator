@@ -1,4 +1,4 @@
-![Screenshot](/figures/logo.png)
+![Screenshot](/team_logo.png)
 # OpenCity Flight Simulator
 Carnegie Mellon University - 24780B Engineering Computation - 21fall
 
