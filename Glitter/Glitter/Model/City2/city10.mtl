@@ -1,7 +1,19 @@
 # Blender MTL File: 'None'
-# Material Count: 1
+# Material Count: 2
 
-newmtl City_low_poly.012
+newmtl City_low_poly.010
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.318547 0.318547 0.318547
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd City_low_poly_1024.png
+map_d City_low_poly_1024.png
+
+newmtl City_low_poly.013
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.318547 0.318547 0.318547
