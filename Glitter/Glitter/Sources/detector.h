@@ -45,9 +45,9 @@ inline bool detector::isAbove()
 	bool aboveFlag = true;	
 	float uav_height = myUAV->getUavPos().y;
 	auto neighbour = myCity->getNeighbour(myUAV->getUavPos());
-	for (auto& grid : neighbour) {
-		aboveFlag = aboveFlag && (grid.block.block_height <= uav_height);
-	}
+	//for (auto& grid : neighbour) {
+	aboveFlag = aboveFlag && (neighbour.at(0).block.block_height <= uav_height);
+	//}
 	//std::cout << "aboveFlag: " << aboveFlag << std::endl;
 	return aboveFlag;
 }
