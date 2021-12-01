@@ -45,8 +45,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, uav* UAV_fc);
 void GameWindow(string Path_to_Project);
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
-void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture);
-void GuiWindow(const char* glsl_version, string Path_to_Project);
+void StartInterface(const char* glsl_version, string Path_to_Project);
+
+GLFWwindow* NewGUIWindow();
 unsigned int loadCubemap(vector<std::string> faces);
 
 // settings
@@ -63,11 +64,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-////text
-//TextRenderer* Text;
-
-//// sound player
-//bool canPlaySound = false;
 string getCurrentDir() {
     char buff[MAX_PATH];
     GetModuleFileName(NULL, buff, MAX_PATH);
@@ -121,17 +117,17 @@ int main()
     
 
     // load user interface
-    GuiWindow(glsl_version, Path_to_Project);
+    StartInterface(glsl_version, Path_to_Project);
     // load Game
     GameWindow(Path_to_Project);
     
     return 0;
 }
-void GuiWindow(const char* glsl_version, string Path_to_Project)
-{
+
+GLFWwindow* NewGUIWindow() {
     // Create window with graphics context
     // GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
-    
+
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -143,12 +139,12 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     SCR_HEIGHT = mode->height;
     // real full screen, but not good for Zoom share screen
     // glfwSetWindowMonitor(window, primary, 0, 0, SCR_WIDTH, SCR_HEIGHT, mode->refreshRate);
-    
+
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Start GUI", NULL, NULL);
 
     if (window == NULL)
         exit(-1);
-    
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
@@ -172,9 +168,14 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     //// tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     stbi_set_flip_vertically_on_load(true);
 
-    // configure global opengl state
-    // -----------------------------
-    //glEnable(GL_DEPTH_TEST);
+    return window;
+}
+
+void StartInterface(const char* glsl_version, string Path_to_Project)
+{
+
+    GLFWwindow* window = NewGUIWindow();
+
 
     // Setup Dear ImGui style
     // ImGui::StyleColorsDark();
@@ -186,6 +187,8 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
 
 
     // Our state
+    int page = 0;
+    int model_selection = 0;
     bool show_demo_window = false;
     bool show_another_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -197,6 +200,21 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     GLuint bg_img_texture = 0;
     GLuint title_img_texture = 0;
     GLuint start_btn_img_texture = 0;
+    GLuint selection_img_texture = 0;
+
+
+    GLuint model1_img_texture = 0;
+    GLuint model2_img_texture = 0;
+    GLuint model3_img_texture = 0;
+    GLuint model4_img_texture = 0;
+
+    GLuint model1btn_img_texture = 0;
+    GLuint model2btn_img_texture = 0;
+    GLuint model3btn_img_texture = 0;
+    GLuint model4btn_img_texture = 0;
+    GLuint modelconfirmbtn_img_texture = 0;
+
+    GLuint instruction_img_texture = 0;
 
     bool ret = LoadTextureFromFile((Path_to_Project + string("/figures/city_nobg.png")).c_str(), &bg_img_texture, &my_image_width, &my_image_height);
     IM_ASSERT(ret);
@@ -204,23 +222,37 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     IM_ASSERT(ret);
     ret = LoadTextureFromFile((Path_to_Project + string("/figures/start_button_nobg.png")).c_str(), &start_btn_img_texture, &my_image_width, &my_image_height);
     IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/MyImage01.jpg")).c_str(), &selection_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
 
+    // four model textures
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model1.png")).c_str(), &model1_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model2.png")).c_str(), &model2_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model3.png")).c_str(), &model3_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model4.png")).c_str(), &model4_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+
+    // button textures for four models
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model1_btn.png")).c_str(), &model1btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model2_btn.png")).c_str(), &model2btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model3_btn.png")).c_str(), &model3btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/model4_btn.png")).c_str(), &model4btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/confirm_btn.png")).c_str(), &modelconfirmbtn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+
+    // instruction texture
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/instruction.png")).c_str(), &instruction_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
 
     bool show_dropdown_menu = false;
 
-
-    // Main loop
-    StartInterface(window, clear_color, bg_img_texture, title_img_texture, start_btn_img_texture);
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
-}
-
-void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture) {
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -239,44 +271,153 @@ void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_textur
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // start button window
-        //{
-        //    ImVec2 pos_offset(SCR_WIDTH / 2, SCR_HEIGHT * 0.75); // center location of the window
-        //    ImVec2 button_size(200, 100);  // size of the window
-        //    ImVec2 button_pos(pos_offset.x - size.x / 2, pos_offset.y - size.y / 2); // top-left cornor of the win
 
-        //    ImGui::SetNextWindowPos(pos);
-        //    ImGui::SetNextWindowSize(size);
-        //    ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-        //    ImGui::ImageButton((void*)(intptr_t)start_btn_img_texture, size);
-        //    ImGui::End();
-        //}
-           // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        // if (true)
-        //     ImGui::ShowDemoWindow(&show_demo_window);
-        // title window
         {
             static int counter = 0;
 
             ImVec2 pos_offset(SCR_WIDTH / 2, SCR_HEIGHT / 2); // center location of the window
-            ImVec2 size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.8);  // size of the window
-            ImVec2 pos(pos_offset.x - size.x / 2, pos_offset.y - size.y / 2);
 
-            ImVec2 titleImgSize(size.x, size.y * 0.8);
-            ImVec2 btnSize(size.x * 0.2, size.y * 0.2);
+            ImVec2 titleWin_size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.8);  // size of the window
+            ImVec2 titleWin_pos(pos_offset.x - titleWin_size.x / 2, pos_offset.y - titleWin_size.y / 2);
 
-            ImGui::SetNextWindowPos(pos);
-            ImGui::SetNextWindowSize(size);
-            ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
-            ImGui::Image((void*)(intptr_t)title_img_texture, titleImgSize);
-            ImGui::SetCursorPosX(pos_offset.x - btnSize.x);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - btnSize.y);
-            if (ImGui::ImageButton((ImTextureID)start_btn_img_texture, btnSize)) {
-                cout << "I Love 24780 soooooo much!!!! Let's Play the game!";
-                // counter ++;
+            ImVec2 modelWin_size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.6);
+            ImVec2 modelWin_pos(pos_offset.x - modelWin_size.x / 2 - 500, pos_offset.y - modelWin_size.y / 2 - 200);
+
+            ImVec2 titleImgSize(titleWin_size.x, titleWin_size.y * 0.8);
+            ImVec2 START_btnSize(titleWin_size.x * 0.15, titleWin_size.y * 0.15);
+
+            ImVec2 modelImgSize(titleWin_size.x * 0.6, titleWin_size.y * 0.6);
+
+
+            switch (page) {
+            case 0:
+                // =============================================================== START Interface =================================================================
+                   // title window
+                ImGui::SetNextWindowPos(titleWin_pos);
+                ImGui::SetNextWindowSize(titleWin_size);
+                ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
+                ImGui::Image((void*)(intptr_t)title_img_texture, titleImgSize);
+                ImGui::SetCursorPosX(pos_offset.x - START_btnSize.x);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - START_btnSize.y);
+                if (ImGui::ImageButton((ImTextureID)start_btn_img_texture, START_btnSize)) {
+                    cout << "I Love 24780 soooooo much!!!! Start selecting model!";
+                    page++;
+                }
+                ImGui::End();
+
+                //Load the bg into ImGui
+                ImGui::SetNextWindowPos(ImVec2(0, 0));
+                ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+                ImGui::Begin("OpenGL Texture Text", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
+                ImGui::Image((void*)(intptr_t)bg_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
+                ImGui::End();
                 break;
-                //show_dropdown_menu ^= true;
+            case 1:
+                // =============================================================== Selection Interface ============================================================================
+
+                    // Load models
+                ImGui::SetNextWindowPos(ImVec2(0, 0));
+                ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+                ImGui::Begin("UAV selection", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+                // buttom 1
+                // check model 1
+                ImGui::SetCursorPosX(pos_offset.x + 1.5 * START_btnSize.x);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + START_btnSize.y);
+                //float button1_y = ImGui::GetCursorPosY();
+                if (ImGui::ImageButton((ImTextureID)model1btn_img_texture, START_btnSize)) {
+                    model_selection = 1;
+                }
+                // button 2
+                // check model 2
+                ImGui::SetCursorPosX(pos_offset.x + 1.5 * START_btnSize.x);
+                if (ImGui::ImageButton((ImTextureID)model2btn_img_texture, START_btnSize)) {
+                    cout << "button 2 pushed" << endl;
+                    model_selection = 2;
+                }
+                // button 3
+                ImGui::SetCursorPosX(pos_offset.x + 1.5 * START_btnSize.x);
+                if (ImGui::ImageButton((ImTextureID)model3btn_img_texture, START_btnSize)) {
+                    model_selection = 3;
+                    //    counter++;
+                    //    imgui::sameline();
+                    //    imgui::text("counter = %d", counter);
+                }
+                // button 4
+                ImGui::SetCursorPosX(pos_offset.x + 1.5 * START_btnSize.x);
+                if (ImGui::ImageButton((ImTextureID)model4btn_img_texture, START_btnSize)) {
+                    model_selection = 4;
+                }
+
+                // start game btn
+                ImGui::SetCursorPosX(pos_offset.x - 0.5 * START_btnSize.x);
+                ImGui::SetCursorPosY(SCR_HEIGHT * 0.7);
+                if (ImGui::ImageButton((ImTextureID)modelconfirmbtn_img_texture, START_btnSize)) {
+
+                    cout << "I Love 24780 soooooo much!!!! Model confirmed!";
+                    page++;
+                }
+
+                switch (model_selection) {
+                case 1:
+                    ImGui::SetCursorPos(ImVec2(SCR_WIDTH * 0.1, SCR_HEIGHT * 0.1));
+                    ImGui::Image((void*)(intptr_t)model1_img_texture, modelImgSize);
+                    break;
+                case 2:
+                    cout << "bottom 2 image show" << endl;
+                    ImGui::SetCursorPos(ImVec2(SCR_WIDTH * 0.1, SCR_HEIGHT * 0.1));
+                    ImGui::Image((void*)(intptr_t)model2_img_texture, modelImgSize);
+                    break;
+                case 3:
+                    ImGui::SetCursorPos(ImVec2(SCR_WIDTH * 0.1, SCR_HEIGHT * 0.1));
+                    ImGui::Image((void*)(intptr_t)model3_img_texture, modelImgSize);
+                    break;
+
+                case 4:
+                    ImGui::SetCursorPos(ImVec2(SCR_WIDTH * 0.1, SCR_HEIGHT * 0.1));
+                    ImGui::Image((void*)(intptr_t)model4_img_texture, modelImgSize);
+                    break;
+                }
+
+                ImGui::End();
+
+                //Load the selection-bg into ImGui
+                //ImGui::SetNextWindowPos(ImVec2(0, 0));
+                //ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+                //ImGui::Begin("background orange", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
+                //ImGui::Image((void*)(intptr_t)selection_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
+                //ImGui::End();
+                break;
+
+            case 2:
+                // show instruction
+
+                ImGui::StyleColorsLight();
+                ImGui::SetNextWindowPos(ImVec2(0, 0));
+                ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+                //ImGui::SetNextWindowSize(ImVec2(0.9*SCR_WIDTH, 0.9* SCR_HEIGHT));
+                ImGui::Begin("Title", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
+                ImGui::Image((void*)(intptr_t)instruction_img_texture, ImVec2(SCR_WIDTH, 0.9 * SCR_HEIGHT));
+                // ImGui::Image((void*)(intptr_t)instruction_img_texture, titleImgSize);
+                ImGui::SetCursorPosX(pos_offset.x - 0.5 * START_btnSize.x);
+                ImGui::SetCursorPosY(pos_offset.y + 2 * START_btnSize.y);
+                ImGui::StyleColorsClassic();
+                // close the gui window and start the game window
+                if (ImGui::ImageButton((ImTextureID)start_btn_img_texture, START_btnSize)) {
+                    glfwSetWindowShouldClose(window, true);
+                }
+                ImGui::End();
+                break;
             }
+
+
+
+
+
+
+
+
+
             //if(show_dropdown_menu){
             //// if (counter % 5 == 0)
             //    if (ImGui::Button("I")){
@@ -295,21 +436,15 @@ void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_textur
             //        cout<<"780\n";
             //    }
             //}
-            ImGui::End();
         }
 
-        //Try to load the image into ImGui
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
-        ImGui::Begin("OpenGL Texture Text", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
-        ImGui::Image((void*)(intptr_t)bg_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
-        ImGui::End();
+
 
 
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        // if (show_demo_window)
-              //ImGui::ShowDemoWindow(&show_demo_window);
+        //if (show_demo_window)
+        //    ImGui::ShowDemoWindow(&show_demo_window);
 
         //// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         //{
@@ -377,7 +512,17 @@ void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_textur
         glfwSwapBuffers(window);
     }
 
+
+
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }
+
 // Simple helper function to load an image into a OpenGL texture with common settings
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
 {
