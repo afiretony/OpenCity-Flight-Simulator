@@ -563,8 +563,10 @@ void GameWindow(string Path_to_Project)
 
 
             // specificy Z and X key to switch between first and third POV
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
                 firstPOV = true;
+                camera.Pitch = 0.f;
+            }
             else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
                 firstPOV = false;
 
@@ -592,7 +594,6 @@ void GameWindow(string Path_to_Project)
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc->getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
-                camera.Pitch = 0.f;
                 currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
                 //camera.tiltVerticalWithUAV(-cameraRoll);
