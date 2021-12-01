@@ -136,15 +136,16 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primary);
 
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "My Title", primary, NULL);
-
-    glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
-    
     SCR_WIDTH = mode->width;
     SCR_HEIGHT = mode->height;
-    //GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    // real full screen, but not good for Zoom share screen
+    // glfwSetWindowMonitor(window, primary, 0, 0, SCR_WIDTH, SCR_HEIGHT, mode->refreshRate);
+    
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Start GUI", NULL, NULL);
+
     if (window == NULL)
         exit(-1);
+    
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
