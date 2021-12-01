@@ -1,6 +1,7 @@
 #pragma once
+#include "SimObject.h"
 #include "flightcontrol.h"
-#include "map.h"
+
 
 
 class obstacle : public SimObject{

@@ -13,7 +13,7 @@ struct grid
 	// model ID
 	int id = 0;
 	obstacle* block;
-	float block_height;
+	float block_height = 0.0f;
 };
 
 class Map{
