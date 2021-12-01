@@ -6,7 +6,7 @@
 
 class detector {
 private:
-	const float tolerance = 3;
+	const float tolerance = 4;
 
 	uav* myUAV;
 	Map* myCity;
@@ -46,7 +46,8 @@ inline bool detector::isAbove()
 	float uav_height = myUAV->getUavPos().y;
 	auto neighbour = myCity->getNeighbour(myUAV->getUavPos());
 	//for (auto& grid : neighbour) {
-	aboveFlag = aboveFlag && (neighbour.at(0).block.block_height <= uav_height);
+	if(neighbour.size() != 0)
+		aboveFlag = aboveFlag && (neighbour.at(0).block.block_height <= uav_height);
 	//}
 	//std::cout << "aboveFlag: " << aboveFlag << std::endl;
 	return aboveFlag;
@@ -65,19 +66,19 @@ inline glm::vec3 detector::getRepulse()
 	std::cout << "h_dist-len: " << h_dist - len << std::endl;
 	if ((h_dist - len) <= tolerance) {
 		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos); 
-		float mag = 500.0f / (h_dist * h_dist);
+		float mag = 800.0f / (h_dist * h_dist);
 		//float mag = 10.0f;
 		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
 		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
 	}
-	else if ((h_dist - len) <= 0)
-	{
-		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos);
-		//float mag = 100.0f / (h_dist * h_dist);
-		float mag = 1000.0f;
-		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
-		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
-	}
+	//else if ((h_dist - len) <= 0)
+	//{
+	//	glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos);
+	//	//float mag = 100.0f / (h_dist * h_dist);
+	//	float mag = 1000.0f;
+	//	force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
+	//	std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
+	//}
 	else{
 		force = glm::vec3(0.0f);
 	}
