@@ -78,7 +78,7 @@ inline void Map::randMap(int maxId)
 		currGrid.id = 0 + rand() % maxId;
 		string Path_to_Models = Path_to_Project + "Glitter/Glitter/Model/City2/city" + to_string(currGrid.id + 1) + ".obj";
 		currGrid.block = new obstacle(grid_len * scale * 0.8f, Path_to_Models, scale * glm::vec3(1.0f, 1.0f, 1.0f), currGrid.coord);
-		currGrid.block_height = scale * currGrid.block->ObjectModel.height;
+		if (currGrid.id > 2) currGrid.block_height = scale * currGrid.block->ObjectModel.height;
 	}
 }
 inline void Map::loadMap()
@@ -117,7 +117,7 @@ inline void Map::loadMap()
 
 			string Path_to_Models = Path_to_Project + "Glitter/Glitter/Model/City2/city" + to_string(currGrid.id + 1) + ".obj";
 			currGrid.block = new obstacle(grid_len * scale * 0.8f, Path_to_Models, scale * glm::vec3(1.0f, 1.0f, 1.0f), currGrid.coord);
-			currGrid.block_height = scale * currGrid.block->ObjectModel.height;
+			if (currGrid.id > 2) currGrid.block_height = scale * currGrid.block->ObjectModel.height;
 			grids_map.push_back(currGrid);
 
 			i++;

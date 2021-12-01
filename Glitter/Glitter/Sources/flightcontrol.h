@@ -167,6 +167,11 @@ void uav::dynamics()
 	vel.y += acc.y * dt;
 	vel.z += acc.z * dt;
 
+	// velocity bound
+	if (abs(vel.x) > 100) vel.x = vel.x > 0 ? 100 : -100;
+	if (abs(vel.y) > 100) vel.y = vel.y > 0 ? 100 : -100;
+	if (abs(vel.z) > 100) vel.z = vel.z > 0 ? 100 : -100;
+
 	// calculate position
 	float temp_x = vel.x * dt;
 	float temp_z = vel.z * dt;
