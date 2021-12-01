@@ -118,6 +118,7 @@ int main()
 
     // load user interface
     StartInterface(glsl_version, Path_to_Project);
+
     // load Game
     GameWindow(Path_to_Project);
     
@@ -380,13 +381,6 @@ void StartInterface(const char* glsl_version, string Path_to_Project)
                 }
 
                 ImGui::End();
-
-                //Load the selection-bg into ImGui
-                //ImGui::SetNextWindowPos(ImVec2(0, 0));
-                //ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
-                //ImGui::Begin("background orange", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
-                //ImGui::Image((void*)(intptr_t)selection_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
-                //ImGui::End();
                 break;
 
             case 2:
@@ -411,93 +405,7 @@ void StartInterface(const char* glsl_version, string Path_to_Project)
             }
 
 
-
-
-
-
-
-
-
-            //if(show_dropdown_menu){
-            //// if (counter % 5 == 0)
-            //    if (ImGui::Button("I")){
-            //        cout<<"I"<<endl;
-            //    }
-            //    ImGui::SameLine();
-            //    if (ImGui::Button("Love")){
-            //        cout<<"Love\n";
-            //    }
-            //    ImGui::SameLine();
-            //    if (ImGui::Button("24")){
-            //        cout<<"24\n";
-            //    }
-            //    ImGui::SameLine();
-            //    if (ImGui::Button("780")){
-            //        cout<<"780\n";
-            //    }
-            //}
         }
-
-
-
-
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //if (show_demo_window)
-        //    ImGui::ShowDemoWindow(&show_demo_window);
-
-        //// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        //{
-        //   ImVec2 pos(100, 100);
-        //   ImVec2 size(600, 500);
-        //   bool Ankit = true; // Control if we need a dumy bool
-
-        //   ImGui::Begin("Model Menu", &Ankit, ImGuiWindowFlags_NoTitleBar);                          // Create a window called "HModel Menu" and model should be loaded into it.
-
-        //   ImGuiWindow* window = ImGui::GetCurrentWindow();
-
-        //   ImGui::SetWindowPos(pos);
-        //   ImGui::SetWindowSize(size);
-        //   ImGui::End();
-        //}
-        // menu
-        //{
-        //    imvec2 pos(600, 0);
-        //    //imvec2 size(200, 100);
-        //    static float f = 0.0f;
-        //    static int counter = 0;
-
-        //    imgui::begin("hello, world!");                          // create a window called "hello, world!" and append into it.
-
-        //    imgui::text("this is some useful text.");               // display some text (you can use a format strings too)
-        //    imgui::checkbox("demo window", &show_demo_window);      // edit bools storing our window open/close state
-        //    imgui::checkbox("another window", &show_another_window);
-
-        //    imgui::sliderfloat("float", &f, 0.0f, 1.0f);            // edit 1 float using a slider from 0.0f to 1.0f
-        //    imgui::coloredit3("clear color", (float*)&clear_color); // edit 3 floats representing a color
-
-        //    if (imgui::button("button"))                            // buttons return true when clicked (most widgets return true when edited/activated)
-        //        counter++;
-        //    imgui::sameline();
-        //    imgui::text("counter = %d", counter);
-
-        //    imgui::text("application average %.3f ms/frame (%.1f fps)", 1000.0f / imgui::getio().framerate, imgui::getio().framerate);
-        //    imguiwindow* window = imgui::getcurrentwindow();
-
-        //    imgui::setwindowpos(pos);
-        //    //imgui::setwindowsize(size);
-        //    imgui::end();
-        //}
-        //  // 3. show another simple window.
-        // if (show_another_window)
-        // {
-        //     imgui::begin("another window");   // pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        //     imgui::text("hello from another window!");
-        //     if (imgui::button("close me"))
-        //         show_another_window = false;
-        //     imgui::end();
-        // }
-
 
         // Rendering
         ImGui::Render();
