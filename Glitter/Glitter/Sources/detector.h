@@ -72,7 +72,7 @@ inline glm::vec3 detector::getRepulse()
 	glm::vec2 obstacle_pos = glm::vec2(scale * nearest.coord.x, scale * nearest.coord.z);
 	glm::vec2 uav_pos = glm::vec2(myUAV->getUavPos().x, myUAV->getUavPos().z);
 	float h_dist = glm::length(obstacle_pos - uav_pos);
-	std::cout << "h_dist-len: " << h_dist - len << std::endl;
+	//std::cout << "h_dist-len: " << h_dist - len << std::endl;
 	if ((h_dist - len) <= tolerance) {
 		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos); 
 		float mag = 800.0f / (h_dist * h_dist);
