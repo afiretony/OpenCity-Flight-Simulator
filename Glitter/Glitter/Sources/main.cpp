@@ -579,7 +579,7 @@ void GameWindow(string Path_to_Project)
                 camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
                 camera.Position.z = cameraPosition.z + distance * sinf(cameraYaw); //sin
                 camera.rotateWithUAV(-cameraYaw);
-                camera.Pitch = -45.f;
+                camera.Pitch = -30.f;
                 //camera.tiltHorizontalWithUAV(cameraPitch - 45.f);
             }
             else {

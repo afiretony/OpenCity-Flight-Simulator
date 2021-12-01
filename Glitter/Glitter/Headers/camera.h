@@ -133,12 +133,12 @@ public:
     }
 
     void tiltHorizontalWithUAV(float rad) {
-        Pitch = rad * 57.2958;
+        Pitch = rad * 180.0 / PI_1;
         updateCameraVectors();
     }
 
     void rotateWithUAV(float rad) {
-        Yaw = rad * 57.2958;
+        Yaw = rad *  180.0 / PI_1;
         updateCameraVectors();
     }
 
