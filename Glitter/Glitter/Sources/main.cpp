@@ -18,6 +18,8 @@
 #include "yspng.h"
 #include <limits.h>
 
+// test multi thread
+#include <thread>
 
 // include our own library
 #include "flightcontrol.h"
