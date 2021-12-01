@@ -55,7 +55,7 @@ Map::Map(int row, int col, const string path, int maxId)
 	num_col = col;
 	Path_to_Project = path;
 	//randMap(maxId);
-	loadMap(maxId);
+	loadMap();
 }
 
 inline Map::~Map()
