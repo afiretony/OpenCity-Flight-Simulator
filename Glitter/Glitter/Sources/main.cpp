@@ -440,7 +440,7 @@ void GameWindow(string Path_to_Project)
     //------------------------------skybox------------------------------
 
 
-    // load city and uav model
+    // load uav model
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
@@ -504,7 +504,7 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
+        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
 
         //------------------------------skybox------------------------------
         Shader skyboxShader(path3, path4);
@@ -589,11 +589,10 @@ void GameWindow(string Path_to_Project)
         }
 
         // City model
-        const int maxID = 10;
-        auto cityMap = new Map(14, 14, maxID, Path_to_Project);
+        auto cityMap = new Map(14, 14, Path_to_Project);
 
         // Obstacle detector
-        detector avoid(UAV_fc, cityMap);
+        detector avoidControl(UAV_fc, cityMap);
 
         //intialize point of view status
         bool firstPOV = true;
@@ -634,7 +633,7 @@ void GameWindow(string Path_to_Project)
 
             // obstacle avoid
             // -----
-
+            avoidControl.uav_control();
 
             // render
             // ------
