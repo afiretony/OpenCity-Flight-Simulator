@@ -425,22 +425,22 @@ void GameWindow(string Path_to_Project)
     string Path_to_Shader4 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxfs.fs";
     const char* path4 = Path_to_Shader4.c_str();
 
-    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg";
+    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.png";
     const char* skypath1 = Path_to_skybox_right.c_str();
-    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg";
+    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.png";
     const char* skypath2 = Path_to_skybox_left.c_str();
-    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg";
+    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.png";
     const char* skypath3 = Path_to_skybox_top.c_str();
-    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg";
+    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.png";
     const char* skypath4 = Path_to_skybox_bottom.c_str();
-    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg";
+    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.png";
     const char* skypath5 = Path_to_skybox_front.c_str();
-    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg";
+    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.png";
     const char* skypath6 = Path_to_skybox_back.c_str();
     //------------------------------skybox------------------------------
 
 
-    // load city and uav model
+    // load uav model
     // Declear UAV Model
     string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
@@ -504,7 +504,7 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
+        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
 
         //------------------------------skybox------------------------------
         Shader skyboxShader(path3, path4);
@@ -589,11 +589,10 @@ void GameWindow(string Path_to_Project)
         }
 
         // City model
-        const int maxID = 10;
-        auto cityMap = new Map(14, 14, maxID, Path_to_Project);
+        auto cityMap = new Map(14, 14, Path_to_Project);
 
         // Obstacle detector
-        detector avoid(UAV_fc, cityMap);
+        detector avoidControl(UAV_fc, cityMap);
 
         //intialize point of view status
         bool firstPOV = true;
@@ -634,7 +633,7 @@ void GameWindow(string Path_to_Project)
 
             // obstacle avoid
             // -----
-
+            avoidControl.uav_control();
 
             // render
             // ------
@@ -655,18 +654,18 @@ void GameWindow(string Path_to_Project)
 
 
             // specificy Z and X key to switch between first and third POV
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
                 firstPOV = true;
                 thirdPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
                 thirdPOV = true;
                 firstPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
                 thirdPOV = false;
                 firstPOV = false;
                 freePOV = true;
