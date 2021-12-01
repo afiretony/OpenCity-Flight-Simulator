@@ -48,6 +48,7 @@ void processInput(GLFWwindow* window, uav* UAV_fc);
 void GameWindow(string Path_to_Project);
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 void StartInterface(const char* glsl_version, string Path_to_Project);
+void EndInterface(const char* glsl_version, string Path_to_Project);
 
 GLFWwindow* NewGUIWindow();
 unsigned int loadCubemap(vector<std::string> faces);
@@ -66,8 +67,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// model selection
+// interface control
 int model_selection = 0;
+bool GameTerminate = false;
 
 string getCurrentDir() {
     char buff[MAX_PATH];
@@ -120,12 +122,17 @@ int main()
     cout << "Path to Project is: " << Path_to_Project << endl;
     std::replace(Path_to_Project.begin(), Path_to_Project.end(), '\\', '/');
     
+    while (!GameTerminate) {
+        // load user interface
+        StartInterface(glsl_version, Path_to_Project);
 
-    // load user interface
-    StartInterface(glsl_version, Path_to_Project);
+        // load Game
+        GameWindow(Path_to_Project);
 
-    // load Game
-    GameWindow(Path_to_Project);
+        // load user interface
+        EndInterface(glsl_version, Path_to_Project);
+    }
+    
     
     return 0;
 }
@@ -434,6 +441,134 @@ void StartInterface(const char* glsl_version, string Path_to_Project)
     glfwDestroyWindow(window);
     glfwTerminate();
 }
+void EndInterface(const char* glsl_version, string Path_to_Project)
+{
+
+    GLFWwindow* window = NewGUIWindow();
+
+
+    // Setup Dear ImGui style
+    // ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
+    // ImGui::StyleColorsLight();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+
+    // Our state
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    /****** Load Images for the start-up menu ***************/
+    //Load our texture for background
+    int my_image_width = 0;
+    int my_image_height = 0;
+    GLuint bg_img_texture = 0;
+    GLuint title_img_texture = 0;
+    GLuint start_btn_img_texture = 0;
+    GLuint selection_img_texture = 0;
+    GLuint restart_btn_img_texture = 0;
+    GLuint exit_btn_img_texture = 0;
+
+
+    GLuint instruction_img_texture = 0;
+
+    bool ret = LoadTextureFromFile((Path_to_Project + string("/figures/city_nobg.png")).c_str(), &bg_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/start_interface-removebg.png")).c_str(), &title_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/start_button_nobg.png")).c_str(), &start_btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/restart.png")).c_str(), &restart_btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+    ret = LoadTextureFromFile((Path_to_Project + string("/figures/exit.png")).c_str(), &exit_btn_img_texture, &my_image_width, &my_image_height);
+    IM_ASSERT(ret);
+
+    // Main loop
+    while (!glfwWindowShouldClose(window))
+    {
+
+
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+        glfwPollEvents();
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
+        {
+            static int counter = 0;
+
+            ImVec2 pos_offset(SCR_WIDTH / 2, SCR_HEIGHT / 2); // center location of the window
+
+            ImVec2 titleWin_size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.8);  // size of the window
+            ImVec2 titleWin_pos(pos_offset.x - titleWin_size.x / 2, pos_offset.y - titleWin_size.y / 2);
+
+            ImVec2 modelWin_size(SCR_WIDTH * 0.8, SCR_HEIGHT * 0.6);
+            ImVec2 modelWin_pos(pos_offset.x - modelWin_size.x / 2 - 500, pos_offset.y - modelWin_size.y / 2 - 200);
+
+            ImVec2 titleImgSize(titleWin_size.x, titleWin_size.y * 0.8);
+            ImVec2 START_btnSize(titleWin_size.x * 0.15, titleWin_size.y * 0.15);
+
+            ImVec2 modelImgSize(titleWin_size.x * 0.6, titleWin_size.y * 0.6);
+
+            // end window
+            ImGui::SetNextWindowPos(titleWin_pos);
+            ImGui::SetNextWindowSize(titleWin_size);
+            ImGui::Begin("END", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus);
+            ImGui::Image((void*)(intptr_t)title_img_texture, titleImgSize);
+            ImGui::SetCursorPosX(SCR_WIDTH*0.2 - START_btnSize.x*0.5);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - START_btnSize.y);
+            if (ImGui::ImageButton((ImTextureID)exit_btn_img_texture, START_btnSize)) {
+                glfwSetWindowShouldClose(window, true);
+                GameTerminate = true;
+            }
+            ImGui::SetCursorPosX(SCR_WIDTH * 0.6 - START_btnSize.x * 0.5);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - START_btnSize.y);
+            if (ImGui::ImageButton((ImTextureID)restart_btn_img_texture, START_btnSize)) {
+                glfwSetWindowShouldClose(window, true);
+                GameTerminate = false;
+            }
+            ImGui::End();
+
+            //Load the bg into ImGui
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+            ImGui::Begin("OpenGL Texture Text", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBringToFrontOnFocus);
+            ImGui::Image((void*)(intptr_t)bg_img_texture, ImVec2(SCR_WIDTH, SCR_HEIGHT));
+            ImGui::End();
+
+        }
+
+        // Rendering
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        // glViewport(0, 0, display_w, display_h);
+        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+        // glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window);
+    }
+
+
+
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
 
 // Simple helper function to load an image into a OpenGL texture with common settings
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
@@ -510,7 +645,7 @@ void GameWindow(string Path_to_Project)
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
     string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/Kylo.wav";
     string Path_to_Sound3 = Path_to_Project + "Glitter/Glitter/Sounds/tie.wav";
-    string Path_to_Sound4 = Path_to_Project + "Glitter/Glitter/Sounds/golden.wav";
+    string Path_to_Sound4 = Path_to_Project + "Glitter/Glitter/Sounds/golden2.wav";
 
     glfwInit();
     // Use OpenGL version 3.3
@@ -665,6 +800,7 @@ void GameWindow(string Path_to_Project)
         float volume;
         // load user choice, note use of .c_str()
         if (YSOK == myWav1.LoadWav(Path_to_Sound.c_str())) {
+            cout << "sounds here" << endl;
             player1.Start();
             player1.SetVolume(myWav1, 0.5);
             player1.PlayBackground(myWav1);
