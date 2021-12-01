@@ -555,12 +555,13 @@ void GameWindow(string Path_to_Project)
 
         vector<std::string> faces
         {
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/right.jpg",
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/left.jpg",
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/top.jpg",
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/bottom.jpg",
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/front.jpg",
-                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/back.jpg"
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg",
+                Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg"
         };
         unsigned int cubemapTexture = loadCubemap(faces);
 
