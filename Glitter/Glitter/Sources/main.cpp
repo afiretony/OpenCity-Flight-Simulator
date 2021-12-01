@@ -613,64 +613,39 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         UAV_fc->forward();
-        UAV_fc->dynamics();
-    }
         
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         UAV_fc->backward();
-        UAV_fc->dynamics();
-    }
-        
          
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
         UAV_fc->left();
-        UAV_fc->dynamics();
-    }
         
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         UAV_fc->right();
-        UAV_fc->dynamics();
-    }
         
-        
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         UAV_fc->up();
-        UAV_fc->dynamics();
-    }
         
-        
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         UAV_fc->down();
-        UAV_fc->dynamics();
-    }
         
-        
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         UAV_fc->yawleft();
-        UAV_fc->dynamics();
-    }
         
-        
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         UAV_fc->yawright();
-        UAV_fc->dynamics();
-    }
         
-        
-    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS
+    if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS 
+        && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS 
+        && glfwGetKey(window, GLFW_KEY_LEFT) != GLFW_PRESS 
         && glfwGetKey(window, GLFW_KEY_RIGHT) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_W) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_S) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_A) != GLFW_PRESS
-        && glfwGetKey(window, GLFW_KEY_D) != GLFW_PRESS) {
+        && glfwGetKey(window, GLFW_KEY_D) != GLFW_PRESS)
         UAV_fc->hold();
-        UAV_fc->dynamics();
-    }
-        
 
     //if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     //    UAV_fc->hold();
@@ -684,7 +659,7 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     //if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     //    UAV_fc->hold();
 
-    
+    UAV_fc->dynamics();
 }
 
 
