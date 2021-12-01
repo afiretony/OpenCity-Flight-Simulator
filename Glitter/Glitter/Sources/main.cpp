@@ -507,6 +507,8 @@ void GameWindow(string Path_to_Project)
 
         //intialize point of view status
         bool firstPOV = true;
+        bool thirdPOV = true;
+        bool freePOV = true;
 
         // camera parameters
         float distance = 0.5;
@@ -565,10 +567,21 @@ void GameWindow(string Path_to_Project)
             // specificy Z and X key to switch between first and third POV
             if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
                 firstPOV = true;
-                camera.Pitch = 0.f;
+                thirdPOV = false;
+                freePOV = false;
             }
             else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+            {
+                thirdPOV = true;
                 firstPOV = false;
+                freePOV = false;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+                thirdPOV = false;
+                firstPOV = false;
+                freePOV = true;
+                camera.Pitch = 0.f;
+            }
 
             //distance from camera to UAV
             cameraPosition = UAV_fc->getUavPos();
@@ -578,10 +591,9 @@ void GameWindow(string Path_to_Project)
 
             last_frame = currentFrame;
 
-            if (firstPOV == false) {
+            if (thirdPOV) {
                 // draw UAV (physical update is integrated in class)
                 
-
                 camera.Position.x = cameraPosition.x - distance * cosf(cameraYaw);//cos
                 camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
                 camera.Position.z = cameraPosition.z + distance * sinf(cameraYaw); //sin
@@ -589,19 +601,26 @@ void GameWindow(string Path_to_Project)
                 camera.Pitch = -30.f;
                 currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch - 45.f);
+               
             }
-            else {
+            else if(firstPOV) {
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
                 camera.Position = UAV_fc->getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
+                camera.Pitch = 0.f;
                 currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
                 //camera.tiltVerticalWithUAV(-cameraRoll);
             }
+            else if (freePOV) {
+                camera.Position = UAV_fc->getUavPos();
+                camera.Position.y -= 0.15;
+                currentFrame++;
+            }
             while (last_frame == currentFrame);
 
             // use shader again to project using updated camera position 
-            // enable shader before setting uniforms
+               // enable shader before setting uniforms
             ourShader.use();
 
             // camera/view transformation
@@ -612,7 +631,8 @@ void GameWindow(string Path_to_Project)
             ourShader.setMat4("projection", projection);
             ourShader.setMat4("view", view);
 
-            UAV_fc->Draw(ourShader);
+            if(!firstPOV)
+                UAV_fc->Draw(ourShader);
 
 
             // draw city
