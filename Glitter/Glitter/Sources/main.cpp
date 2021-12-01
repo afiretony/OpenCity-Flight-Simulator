@@ -25,6 +25,7 @@
 #include "SimObject.h"
 #include "obstacleavoid.h"
 #include "map.h"
+#include "detector.h"
 
 // include gui library
 #include "imgui.h"
@@ -482,7 +483,7 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        uav UAV_fc(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
+        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
 
         // initialize UAV sound effects
         //set initial volume at first display of UAV
@@ -499,7 +500,10 @@ void GameWindow(string Path_to_Project)
 
         // City model
         const int maxID = 10;
-        Map cityMap(14, 14, maxID, Path_to_Project);
+        auto cityMap = new Map(14, 14, maxID, Path_to_Project);
+
+        // Obstacle detector
+        detector avoid(UAV_fc, cityMap);
 
         //intialize point of view status
         bool firstPOV = true;
@@ -514,8 +518,8 @@ void GameWindow(string Path_to_Project)
         {
 
             // program dynamic UAV sound effect volume
-            if (UAV_fc.GetNormVel() > 0)
-                volume = UAV_fc.GetNormVel() / 2 + 0.5;
+            if (UAV_fc->GetNormVel() > 0)
+                volume = UAV_fc->GetNormVel() / 2 + 0.5;
             else
                 volume = 0.5;
             //cout << UAV_fc.GetNormVel() << endl;
@@ -526,12 +530,16 @@ void GameWindow(string Path_to_Project)
             float currentFrame = glfwGetTime();
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
-            UAV_fc.getdeltatime(deltaTime);
+            UAV_fc->getdeltatime(deltaTime);
             // cout << currentFrame << endl;
 
             // input
             // -----
-            processInput(window, &UAV_fc);
+            processInput(window, UAV_fc);
+
+            // obstacle avoid
+            // -----
+
 
             // render
             // ------
@@ -558,14 +566,14 @@ void GameWindow(string Path_to_Project)
                 firstPOV = false;
 
             //distance from camera to UAV
-            cameraPosition = UAV_fc.getUavPos();
-            cameraYaw = UAV_fc.getUavTwist().y;
-            cameraPitch = UAV_fc.getUavTwist().x;
-            cameraRoll = UAV_fc.getUavTwist().z;
+            cameraPosition = UAV_fc->getUavPos();
+            cameraYaw = UAV_fc->getUavTwist().y;
+            cameraPitch = UAV_fc->getUavTwist().x;
+            cameraRoll = UAV_fc->getUavTwist().z;
 
             if (firstPOV == false) {
                 // draw UAV (physical update is integrated in class)
-                UAV_fc.Draw(ourShader);
+                UAV_fc->Draw(ourShader);
 
                 camera.Position.x = cameraPosition.x - distance * cosf(cameraYaw);//cos
                 camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
@@ -576,7 +584,7 @@ void GameWindow(string Path_to_Project)
             }
             else {
                 // or perhaps write a unity function with verying distance (firstPOV distance=0, else distance=0.5)
-                camera.Position = UAV_fc.getUavPos();
+                camera.Position = UAV_fc->getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
                 camera.Pitch = 0.f;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
@@ -585,7 +593,7 @@ void GameWindow(string Path_to_Project)
 
 
             // draw city
-            for (auto& grid : cityMap.grids_map) {
+            for (auto& grid : cityMap->grids_map) {
                 grid.block->Draw(ourShader);
             }
 
@@ -615,49 +623,42 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
         UAV_fc->forward();
-        UAV_fc->dynamics();
     }
         
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
         UAV_fc->backward();
-        UAV_fc->dynamics();
     }
         
          
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         UAV_fc->left();
-        UAV_fc->dynamics();
     }
         
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
         UAV_fc->right();
-        UAV_fc->dynamics();
     }
         
         
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         UAV_fc->up();
-        UAV_fc->dynamics();
     }
         
         
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         UAV_fc->down();
-        UAV_fc->dynamics();
     }
         
         
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         UAV_fc->yawleft();
-        UAV_fc->dynamics();
     }
         
         
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         UAV_fc->yawright();
-        UAV_fc->dynamics();
     }
-        
+
+    UAV_fc->dynamics();
         
     if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS
         && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS

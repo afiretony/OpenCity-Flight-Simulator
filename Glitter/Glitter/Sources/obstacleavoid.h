@@ -1,4 +1,6 @@
-#pragma once
+#ifndef OBSTACLE_H
+#define OBSTACLE_H
+
 #include "SimObject.h"
 #include "flightcontrol.h"
 
@@ -13,23 +15,4 @@ public:
 
 };
 
-//class detector {
-//private:
-//	float tolerance;
-//
-//	uav* myUAV;
-//	Map* myCity;
-//	//glm::vec3 getForwardDir(obstacle* obst, uav* craft);
-//	
-//public:
-//
-//	detector(Map& city, uav& drone);
-//
-//	//// check if an obstacle should be in map 
-//	//bool isInMap(obstacle obst, std::vector<obstacle> list, glm::vec3 fwdDir);
-//	//glm::vec3 getRepulse(obstacle* obst, uav* craft);
-//};
-//
-//detector::detector(Map& city, uav& drone) {
-//	;
-//}
+#endif
