@@ -473,7 +473,7 @@ void GameWindow(string Path_to_Project)
     // tell GLFW to make the context of our window the main context on the current thread
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    
+    glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
@@ -709,7 +709,6 @@ void GameWindow(string Path_to_Project)
                 //camera.tiltVerticalWithUAV(-cameraRoll);
             }
             else if (freePOV) {
-                glfwSetCursorPosCallback(window, mouse_callback);
                 camera.Position = UAV_fc->getUavPos();
                 camera.Position.y -= 0.15;
                 currentFrame++;
