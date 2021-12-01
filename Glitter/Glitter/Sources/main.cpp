@@ -425,17 +425,17 @@ void GameWindow(string Path_to_Project)
     string Path_to_Shader4 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxfs.fs";
     const char* path4 = Path_to_Shader4.c_str();
 
-    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.jpg";
+    string Path_to_skybox_right = Path_to_Project + "Glitter/Glitter/Model/Skybox/right.png";
     const char* skypath1 = Path_to_skybox_right.c_str();
-    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.jpg";
+    string Path_to_skybox_left = Path_to_Project + "Glitter/Glitter/Model/Skybox/left.png";
     const char* skypath2 = Path_to_skybox_left.c_str();
-    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.jpg";
+    string Path_to_skybox_top = Path_to_Project + "Glitter/Glitter/Model/Skybox/top.png";
     const char* skypath3 = Path_to_skybox_top.c_str();
-    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.jpg";
+    string Path_to_skybox_bottom = Path_to_Project + "Glitter/Glitter/Model/Skybox/bottom.png";
     const char* skypath4 = Path_to_skybox_bottom.c_str();
-    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.jpg";
+    string Path_to_skybox_front = Path_to_Project + "Glitter/Glitter/Model/Skybox/front.png";
     const char* skypath5 = Path_to_skybox_front.c_str();
-    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.jpg";
+    string Path_to_skybox_back = Path_to_Project + "Glitter/Glitter/Model/Skybox/back.png";
     const char* skypath6 = Path_to_skybox_back.c_str();
     //------------------------------skybox------------------------------
 
