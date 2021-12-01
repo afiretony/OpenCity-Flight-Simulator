@@ -44,11 +44,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, uav* UAV_fc);
 void GameWindow(string Path_to_Project);
-
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 void StartInterface(GLFWwindow* window, ImVec4 clear_color, GLuint bg_img_texture, GLuint title_img_texture, GLuint start_btn_img_texture);
-
 void GuiWindow(const char* glsl_version, string Path_to_Project);
+unsigned int loadCubemap(vector<std::string> faces);
+
 // settings
 unsigned int SCR_WIDTH = 1024;
 unsigned int SCR_HEIGHT = 768;
@@ -136,15 +136,16 @@ void GuiWindow(const char* glsl_version, string Path_to_Project)
     GLFWmonitor* primary = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primary);
 
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "My Title", primary, NULL);
-
-    glfwSetWindowMonitor(window, primary, 0, 0, mode->width, mode->height, mode->refreshRate);
-    
     SCR_WIDTH = mode->width;
     SCR_HEIGHT = mode->height;
-    //GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
+    // real full screen, but not good for Zoom share screen
+    // glfwSetWindowMonitor(window, primary, 0, 0, SCR_WIDTH, SCR_HEIGHT, mode->refreshRate);
+    
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Start GUI", NULL, NULL);
+
     if (window == NULL)
         exit(-1);
+    
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
@@ -418,6 +419,13 @@ void GameWindow(string Path_to_Project)
     string Path_to_Shader2 = Path_to_Project + "Glitter/Glitter/Shaders/modelfs.fs";
     const char* path2 = Path_to_Shader2.c_str();
 
+    //------------------------------skybox------------------------------
+    string Path_to_Shader3 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxvs.vs";
+    const char* path3 = Path_to_Shader3.c_str(); // convert string to char, because Shader class input has to be char
+    string Path_to_Shader4 = Path_to_Project + "Glitter/Glitter/Shaders/skyboxfs.fs";
+    const char* path4 = Path_to_Shader4.c_str();
+    //------------------------------skybox------------------------------
+
 
     // load city and uav model
     // Declear UAV Model
@@ -460,7 +468,7 @@ void GameWindow(string Path_to_Project)
     }
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
     // -----------------------------
@@ -484,6 +492,83 @@ void GameWindow(string Path_to_Project)
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
         auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10., 0., -0.));  //second glm change initial landed location of UAV
+
+        //------------------------------skybox------------------------------
+        Shader skyboxShader(path3, path4);
+
+        float skyboxVertices[] = {
+            // positions          
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f
+        };
+
+        // skybox VAO
+        unsigned int skyboxVAO, skyboxVBO;
+        glGenVertexArrays(1, &skyboxVAO);
+        glGenBuffers(1, &skyboxVBO);
+        glBindVertexArray(skyboxVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        string test = getCurrentDir();
+
+        vector<std::string> faces
+        {
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/right.jpg",
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/left.jpg",
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/top.jpg",
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/bottom.jpg",
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/front.jpg",
+                "C:/Users/14846/Desktop/24780-Engineers-Republic/Glitter/Glitter/Model/Skybox/back.jpg"
+        };
+        unsigned int cubemapTexture = loadCubemap(faces);
+
+        skyboxShader.use();
+        skyboxShader.setInt("skybox", 0);
+
+        //------------------------------skybox------------------------------
+
 
         // initialize UAV sound effects
         //set initial volume at first display of UAV
@@ -641,6 +726,23 @@ void GameWindow(string Path_to_Project)
                 grid.block->Draw(ourShader);
             }
 
+            //------------------------------skybox------------------------------
+            // draw skybox as last
+            glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+            skyboxShader.use();
+            view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+            skyboxShader.setMat4("view", view);
+            skyboxShader.setMat4("projection", projection);
+            // skybox cube
+            glBindVertexArray(skyboxVAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+            glDepthFunc(GL_LESS); // set depth function back to default
+            //------------------------------skybox------------------------------
+
+
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(window);
@@ -760,4 +862,36 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
+}
+
+unsigned int loadCubemap(vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    stbi_set_flip_vertically_on_load(false);
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
