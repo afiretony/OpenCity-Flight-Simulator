@@ -1,3 +1,5 @@
+<img width="200" img src="https://raw.githubusercontent.com/afiretony/24780-Engineers-Republic/main/team_logo.png" alt="team_logo"/>
+
 # OpenCity Flight Simulator
 Carnegie Mellon University - 24780B Engineering Computation - 21fall
 
@@ -5,7 +7,10 @@ TEAM: ENGINEERS REPUBLIC
 
 ## Summary
 This repository is the final project of team Engineers Republic. Flight simulator is a trending topic in both the entertainment and professional area. In this
-project, the group is planning to develop a software product based on the C++ and OpenGL to realize a customizable and lightweight flight simulator.
+project, the group is planning to develop a software product based on the C++ and Modern OpenGL to realize a customizable and lightweight flight simulator.
+
+## Demo
+https://youtu.be/hylREWDKsfI
 
 ## Basic Function
 ### Entertainment
@@ -22,7 +27,9 @@ project, the group is planning to develop a software product based on the C++ an
 The aircraft has the function of automatic obstacle avoidance, and the city looks realistic with reasonable dimensions (or can be dimensions of real city buildings). Users can switch between different aircraft including UAVs and different helicopters. Users can switch between first-person and third-person point of views.
     
 ## Getting Started
-In case you haven't installed cmake on windows, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
+This project is compiled and tested on windows environment.
+
+In case you haven't installed cmake, you can use [this link](https://github.com/Kitware/CMake/releases/download/v3.22.0-rc2/cmake-3.22.0-rc2-windows-x86_64.msi
 ) to download and install cmake, make sure that you added cmake to system PATH.
 
 To clone this repo:
@@ -55,11 +62,11 @@ Glitter provides the most basic windowing example. It is a starting point, and t
 Functionality           | Library
 ----------------------- | ------------------------------------------
 Mesh Loading            | [assimp](https://github.com/assimp/assimp)
-Physics                 | [bullet](https://github.com/bulletphysics/bullet3)
 OpenGL Function Loader  | [glad](https://github.com/Dav1dde/glad)
 Windowing and Input     | [glfw](https://github.com/glfw/glfw)
 OpenGL Mathematics      | [glm](https://github.com/g-truc/glm)
 Texture Loading         | [stb](https://github.com/nothings/stb)
+ImGui                   | [ImGui](https://github.com/ocornut/imgui)
 
 If you started the tutorials by installing [SDL](https://www.libsdl.org/), [GLEW](https://github.com/nigels-com/glew), or [SOIL](http://www.lonesock.net/soil.html), *stop*. The libraries bundled with Glitter supersede or are functional replacements for these libraries.
 
