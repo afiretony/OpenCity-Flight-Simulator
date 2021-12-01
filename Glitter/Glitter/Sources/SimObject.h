@@ -14,6 +14,7 @@ protected:
 	// define basic state of the obstacle
 	glm::vec3 pos, vel;
 	glm::vec3 scalar;
+	float height = 0.0f;
 	
 public:
 	Model ObjectModel;
@@ -44,6 +45,7 @@ SimObject::SimObject(std::string const& path, glm::vec3 s, glm::vec3 p, glm::vec
 	scalar = s;
 	pos = p;
 	vel = v;
+	height = ObjectModel.height;
 }
 
 inline void SimObject::UpdateScale(glm::vec3 s)
