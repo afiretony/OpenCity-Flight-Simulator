@@ -654,18 +654,18 @@ void GameWindow(string Path_to_Project)
 
 
             // specificy Z and X key to switch between first and third POV
-            if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
                 firstPOV = true;
                 thirdPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
                 thirdPOV = true;
                 firstPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
                 thirdPOV = false;
                 firstPOV = false;
                 freePOV = true;
