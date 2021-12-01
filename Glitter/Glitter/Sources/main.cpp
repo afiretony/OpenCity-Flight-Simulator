@@ -431,7 +431,7 @@ void GameWindow(string Path_to_Project)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);  // Enables sRGB framebuffer capability
-
+    
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Engineering Republic", NULL, NULL);
@@ -514,6 +514,9 @@ void GameWindow(string Path_to_Project)
         float cameraYaw, cameraPitch, cameraRoll;
         // render loop
         // -----------
+        int last_frame = 0;
+        int current_frame = 0;
+
         while (!glfwWindowShouldClose(window))
         {
 
@@ -571,15 +574,18 @@ void GameWindow(string Path_to_Project)
             cameraPitch = UAV_fc->getUavTwist().x;
             cameraRoll = UAV_fc->getUavTwist().z;
 
+            last_frame = currentFrame;
+
             if (firstPOV == false) {
                 // draw UAV (physical update is integrated in class)
-                UAV_fc->Draw(ourShader);
+                
 
                 camera.Position.x = cameraPosition.x - distance * cosf(cameraYaw);//cos
                 camera.Position.y = cameraPosition.y + distance;//maybe add tilt with UAV
                 camera.Position.z = cameraPosition.z + distance * sinf(cameraYaw); //sin
                 camera.rotateWithUAV(-cameraYaw);
                 camera.Pitch = -30.f;
+                currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch - 45.f);
             }
             else {
@@ -587,9 +593,25 @@ void GameWindow(string Path_to_Project)
                 camera.Position = UAV_fc->getUavPos();
                 camera.rotateWithUAV(-cameraYaw);
                 camera.Pitch = 0.f;
+                currentFrame++;
                 //camera.tiltHorizontalWithUAV(cameraPitch);
                 //camera.tiltVerticalWithUAV(-cameraRoll);
             }
+            while (last_frame == currentFrame);
+
+            // use shader again to project using updated camera position 
+            // enable shader before setting uniforms
+            ourShader.use();
+
+            // camera/view transformation
+            projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            view = camera.GetViewMatrix();
+
+            // view/projection transformations
+            ourShader.setMat4("projection", projection);
+            ourShader.setMat4("view", view);
+
+            UAV_fc->Draw(ourShader);
 
 
             // draw city
@@ -655,8 +677,6 @@ void processInput(GLFWwindow* window, uav* UAV_fc)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         UAV_fc->yawright();
     }
-
-    UAV_fc->dynamics();
         
     if (glfwGetKey(window, GLFW_KEY_UP) != GLFW_PRESS 
         && glfwGetKey(window, GLFW_KEY_DOWN) != GLFW_PRESS 
