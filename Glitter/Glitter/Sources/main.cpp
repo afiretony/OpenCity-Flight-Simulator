@@ -442,7 +442,8 @@ void GameWindow(string Path_to_Project)
 
     // load uav model
     // Declear UAV Model
-    string Path_to_Model = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
+    string Path_to_Model1 = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
+    string Path_to_Model2 = Path_to_Project + "Glitter/Glitter/Model/UAV2/warship.obj";
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
     string Path_to_Sound2 = Path_to_Project + "Glitter/Glitter/Sounds/UAV2.wav";
 
@@ -504,8 +505,8 @@ void GameWindow(string Path_to_Project)
 
         // load flight control and dynamics model
         // SimObject init: file path, scalar, position
-        auto UAV_fc = new uav(Path_to_Model, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
-
+        auto UAV_fc = new uav(Path_to_Model1, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));  //second glm change initial landed location of UAV
+        auto warship = new uav(Path_to_Model2, glm::vec3(0.005f, 0.005f, 0.005f), glm::vec3(-10.0f, 0.1f, -0.0f));
         //------------------------------skybox------------------------------
         Shader skyboxShader(path3, path4);
 
@@ -659,13 +660,13 @@ void GameWindow(string Path_to_Project)
                 thirdPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+            else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
                 thirdPOV = true;
                 firstPOV = false;
                 freePOV = false;
             }
-            else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+            else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
                 thirdPOV = false;
                 firstPOV = false;
                 freePOV = true;
