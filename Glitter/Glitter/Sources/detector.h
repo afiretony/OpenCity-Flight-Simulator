@@ -31,8 +31,13 @@ detector::detector(uav* drone, Map* city) {
 }
 
 inline void detector::uav_control()
-{
-	if (!isAbove()) {
+{	
+	if (myUAV->getUavPos().y < 0.1f)
+	{
+		myUAV->up();
+		myUAV->dynamics();
+	}
+	else if (!isAbove()) {
 		myUAV->setCoulombF(getRepulse());
 	}
 	else {

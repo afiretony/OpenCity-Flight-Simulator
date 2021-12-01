@@ -30,7 +30,7 @@ private:
 	string Path_to_Project;
 
 public:
-	Map(int row, int col, int maxId, const string path);
+	Map(int row, int col, const string path, int maxId = 10);
 	~Map();
 
 	// constants
@@ -43,13 +43,13 @@ public:
 	// random generated map
 	void randMap(int maxId);
 	// load pre-designed map
-	void loadMap(int maxId);
+	void loadMap();
 
 	// get neighbour info
 	vector<neighbour> getNeighbour(const glm::vec3 pos);
 };
 
-Map::Map(int row, int col, int maxId, const string path)
+Map::Map(int row, int col, const string path, int maxId)
 {
 	num_row = row;
 	num_col = col;
@@ -81,7 +81,7 @@ inline void Map::randMap(int maxId)
 		currGrid.block_height = scale * currGrid.block->ObjectModel.height;
 	}
 }
-inline void Map::loadMap(int maxId)
+inline void Map::loadMap()
 {
 	string inFileName;
 	ifstream inFile;
