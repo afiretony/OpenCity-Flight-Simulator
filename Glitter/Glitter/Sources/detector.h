@@ -34,8 +34,9 @@ inline void detector::uav_control()
 {	
 	if (myUAV->getUavPos().y < 0.1f)
 	{
-		myUAV->up();
-		myUAV->dynamics();
+		auto currPos = myUAV->getUavPos();
+		currPos.y = 0.1f;
+		myUAV->UpdatePos(currPos);
 	}
 	else if (!isAbove()) {
 		myUAV->setCoulombF(getRepulse());
@@ -76,14 +77,14 @@ inline glm::vec3 detector::getRepulse()
 		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
 		//std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
 	}
-	//else if ((h_dist - len) <= 0)
-	//{
-	//	glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos);
-	//	//float mag = 100.0f / (h_dist * h_dist);
-	//	float mag = 1000.0f;
-	//	force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
-	//	std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
-	//}
+	else if ((h_dist - len) <= 0)
+	{
+		glm::vec2 dir = glm::normalize(uav_pos - obstacle_pos);
+		//float mag = 100.0f / (h_dist * h_dist);
+		float mag = 1000.0f;
+		force += glm::vec3((mag * dir).x, 0.0f, (mag * dir).y);
+		std::cout << "force: " << force.x << "," << force.y << "," << force.z << std::endl;
+	}
 	else{
 		force = glm::vec3(0.0f);
 	}
