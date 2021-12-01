@@ -500,10 +500,9 @@ void GameWindow(string Path_to_Project)
 
     // load uav model
     // Declear UAV Model
-
     string Path_to_Model1 = Path_to_Project + "Glitter/Glitter/Model/UAV2/uploads_files_893841_drone.obj";
     string Path_to_Model2 = Path_to_Project + "Glitter/Glitter/Model/UAV2/warship.obj";
-    string Path_to_Model3 = Path_to_Project + "Glitter/Glitter/Model/Gloden_snitch/Golden_Snitch.obj";
+    string Path_to_Model3 = Path_to_Project + "Glitter/Glitter/Model/UAV2/tie_UV.obj";
     string Path_to_Model4 = Path_to_Project + "Glitter/Glitter/Model/Gloden_snitch/Golden_Snitch.obj";
 
     string Path_to_Sound1 = Path_to_Project + "Glitter/Glitter/Sounds/UAV1.wav";
