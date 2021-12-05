@@ -1,3 +1,9 @@
+// OpenCity Simulator
+// Group project of 21fall 24780B Engineering Computation
+// Carnegie Mellon University
+// main function
+// more info: https://github.com/afiretony/24780-Engineers-Republic
+
 // include basic library
 #include <string>
 #include <iostream>
@@ -272,10 +278,6 @@ void StartInterface(const char* glsl_version, string Path_to_Project)
 
 
         // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
         // Start the Dear ImGui frame
@@ -490,10 +492,6 @@ void EndInterface(const char* glsl_version, string Path_to_Project)
 
 
         // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
         // Start the Dear ImGui frame

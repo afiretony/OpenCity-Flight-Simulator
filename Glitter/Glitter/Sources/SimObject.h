@@ -1,3 +1,9 @@
+// OpenCity Simulator
+// Group project of 21fall 24780B Engineering Computation
+// Carnegie Mellon University
+// main function
+// more info: https://github.com/afiretony/24780-Engineers-Republic
+
 #ifndef SIMOBJECT_H
 #define SIMOBJECT_H
 
